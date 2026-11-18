@@ -1,0 +1,746 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Hadis kaynakları, şerhler, usûl, ricâl ve diğer türlerden eserlerle Doğru/Yanlış, eşleştirme ve kronoloji oyunu.">
+<title>Hadis Eserleri Oyunu</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;1,500&family=Alegreya+Sans:wght@400;500;700&display=swap">
+<style>
+html{color-scheme:light dark} body{margin:0} [hidden]{display:none!important} img{max-width:100%}
+/* Layout: tek sütun "defter" — üstte kunye-box ve tür süzgeci, altta sekmeli oyun alanı; kütüphane hicrî asırlara göre gruplu */
+:root{
+  --paper:#EEF2EE; --surface:#FFFFFF; --ink:#18241F; --muted:#5A6962; --line:#D3DCD6;
+  --accent:#1D6455; --accent-ink:#FFFFFF; --gold:#8E6A17; --sel:#D8EAE3;
+  --ok:#2A7A4B; --ok-bg:#DFF1E5; --bad:#B0343A; --bad-bg:#F8E0E0;
+  --display:"Alegreya", "Iowan Old Style", Georgia, serif;
+  --body:"Alegreya Sans", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#0F1613; --surface:#17201C; --ink:#E3EAE5; --muted:#98A79F; --line:#2B3732;
+  --accent:#5CBFA4; --accent-ink:#0B1411; --gold:#D8B45C; --sel:#1E3A32;
+  --ok:#6FCC92; --ok-bg:#163223; --bad:#EF8B8F; --bad-bg:#3B1C1F; color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --paper:#0F1613; --surface:#17201C; --ink:#E3EAE5; --muted:#98A79F; --line:#2B3732;
+  --accent:#5CBFA4; --accent-ink:#0B1411; --gold:#D8B45C; --sel:#1E3A32;
+  --ok:#6FCC92; --ok-bg:#163223; --bad:#EF8B8F; --bad-bg:#3B1C1F; color-scheme:dark; }
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:20px 48px}
+.wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+header{display:flex;flex-direction:column;gap:6px;padding-top:8px}
+.eyebrow{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:700}
+h1{font-size:clamp(34px,6vw,50px);font-weight:700}
+.sub{color:var(--muted);margin:0;max-width:62ch}
+.stats{font-variant-numeric:tabular-nums}
+
+.filter{display:flex;flex-direction:column;gap:10px}
+.filter-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.filter-head h2{font-size:20px}
+.linkbtn{background:none;border:0;color:var(--accent);font-weight:700;padding:2px 4px;font-size:15px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:15px;display:inline-flex;gap:6px;align-items:center}
+.chip .n{color:var(--muted);font-variant-numeric:tabular-nums;font-size:13px}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip[aria-pressed="true"] .n{color:inherit;opacity:.8}
+
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{background:none;border:0;padding:10px 14px;font-size:16px;font-weight:700;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+
+.scorebar{display:flex;gap:18px;flex-wrap:wrap;font-variant-numeric:tabular-nums;color:var(--muted);font-size:15px}
+.scorebar b{color:var(--ink);font-size:18px}
+
+.panel{display:flex;flex-direction:column;gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px}
+.qmeta{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums;flex-wrap:wrap}
+.qtext{font-family:var(--display);font-size:clamp(21px,3.4vw,27px);line-height:1.35;margin:12px 0 4px}
+.qtext em{font-style:italic;color:var(--accent)}
+.tf-btns{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.big{border:2px solid var(--line);background:var(--surface);border-radius:12px;padding:14px;font-size:19px;font-weight:700}
+.big:hover:not(:disabled){border-color:var(--accent)}
+.big:disabled{cursor:default;opacity:.55}
+.big.ok{background:var(--ok-bg);border-color:var(--ok);color:var(--ok);opacity:1}
+.big.bad{background:var(--bad-bg);border-color:var(--bad);color:var(--bad);opacity:1}
+.primary{background:var(--accent);color:var(--accent-ink);border:0;border-radius:10px;padding:11px 20px;font-weight:700;font-size:16px}
+.secondary{background:none;border:1px solid var(--line);border-radius:10px;padding:10px 16px;font-weight:700;font-size:15px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.verdict{font-weight:700;font-size:18px}
+.verdict.ok{color:var(--ok)} .verdict.bad{color:var(--bad)}
+
+.kunye-box{border-top:1px dashed var(--line);padding-top:12px;display:flex;flex-direction:column;gap:4px}
+.kunye-box .t{font-family:var(--display);font-size:20px;font-weight:700}
+.kunye-box .m{color:var(--ink)}
+.kunye-box .x{color:var(--muted);font-size:15px}
+.date{font-variant-numeric:tabular-nums;color:var(--gold);font-weight:700;white-space:nowrap}
+.tag{display:inline-block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:var(--accent);border:1px solid var(--line);border-radius:6px;padding:1px 7px}
+
+/* Eşleştirme */
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;flex-wrap:wrap}
+.seg button{background:var(--surface);border:0;padding:7px 14px;font-weight:700;font-size:15px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--sel);color:var(--ink)}
+.match{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.col{display:flex;flex-direction:column;gap:8px;min-width:0}
+.col h3{font-family:var(--body);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.tile{text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:16px;line-height:1.3;min-height:52px;overflow-wrap:anywhere}
+.tile.sel{border-color:var(--accent);background:var(--sel)}
+.tile.done{border-color:var(--ok);background:var(--ok-bg);color:var(--ok);cursor:default}
+.tile.wrong{border-color:var(--bad);background:var(--bad-bg);animation:shake .35s}
+.tile .s{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+.tile.done .s{color:inherit;opacity:.8}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+/* Kronoloji */
+.chrono{display:flex;flex-direction:column;gap:8px}
+.ctile{display:flex;align-items:center;gap:12px;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px}
+.ctile .num{flex:0 0 34px;height:34px;border-radius:50%;border:1.5px dashed var(--line);display:grid;place-items:center;font-weight:700;font-variant-numeric:tabular-nums}
+.ctile.placed .num{background:var(--accent);border:0;color:var(--accent-ink)}
+.ctile .body{min-width:0;flex:1}
+.ctile .nm{font-weight:700}
+.ctile .w{font-size:14px;color:var(--muted)}
+.ctile.ok{border-color:var(--ok);background:var(--ok-bg)}
+.ctile.bad{border-color:var(--bad);background:var(--bad-bg)}
+
+/* Kütüphane */
+.search{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit}
+.century{display:flex;flex-direction:column;gap:0}
+.century h3{font-size:22px;padding:18px 0 6px;border-bottom:2px solid var(--ink);display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.century h3 span{font-family:var(--body);font-size:14px;color:var(--muted);font-weight:500}
+.entry{display:grid;grid-template-columns:70px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.entry .body{min-width:0;display:flex;flex-direction:column;gap:2px}
+.entry .t{font-family:var(--display);font-weight:700;font-size:18px;overflow-wrap:anywhere}
+.entry .x{color:var(--muted);font-size:15px}
+.empty{color:var(--muted);padding:20px 0}
+.note{color:var(--muted);font-size:14px}
+@media (max-width:560px){
+  .match{grid-template-columns:1fr 1fr;gap:8px}
+  .tile{font-size:15px;padding:9px}
+  .card{padding:16px}
+  .entry{grid-template-columns:56px 1fr}
+}
+@media (prefers-reduced-motion: reduce){ .tile.wrong{animation:none} }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Sahîfe-i Hemmâm'dan Fihrisü'l-fehâris'e</div>
+    <h1>Hadis Eserleri</h1>
+    <p class="sub">Hadis kaynakları, şerhler, usûl, ricâl ve cerh-ta'dîl, ilel, mevzûât, garîb, tahrîc ve daha fazlası. Tarihler müelliflerin hicrî vefat yıllarıdır. <span class="stats" id="stats"></span></p>
+  </header>
+
+  <section class="filter" aria-labelledby="fh">
+    <div class="filter-head">
+      <h2 id="fh">Hangi türlerden sorulsun?</h2>
+      <div class="row"><button class="linkbtn" id="allOn">Tümünü seç</button><button class="linkbtn" id="allOff">Temizle</button></div>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="note" id="poolNote"></div>
+  </section>
+
+  <nav class="tabs" role="tablist" id="tabs">
+    <button class="tab" role="tab" data-v="tf">Doğru / Yanlış</button>
+    <button class="tab" role="tab" data-v="match">Eşleştirme</button>
+    <button class="tab" role="tab" data-v="chrono">Kronoloji</button>
+    <button class="tab" role="tab" data-v="lib">Kütüphane</button>
+  </nav>
+
+  <div class="scorebar" id="scorebar"></div>
+  <main id="view" class="panel"></main>
+</div>
+
+<script>
+/* ---------- Müellifler: [ad, hicrî vefat] ---------- */
+const A = {
+ hemmam:["Hemmâm b. Münebbih",131], ibnishak:["İbn İshak",151], mamer:["Ma'mer b. Râşid",153],
+ malik:["İmam Mâlik",179], ibnmubarek:["Abdullah b. Mübârek",181], safii:["İmam Şâfiî",204],
+ tayalisi:["Ebû Dâvûd et-Tayâlisî",204], vakidi:["Vâkıdî",207], abdurrezzak:["Abdürrezzâk es-San'ânî",211],
+ ibnhisam:["İbn Hişâm",218], humeydi1:["Abdullah b. Zübeyr el-Humeydî",219], ebuubeyd:["Ebû Ubeyd Kāsım b. Sellâm",224],
+ saidbmansur:["Saîd b. Mansûr",227], ibnsad:["İbn Sa'd",230], ibnmain:["Yahyâ b. Maîn",233],
+ ibnmedini:["Ali b. el-Medînî",234], ibnebiseybe:["İbn Ebû Şeybe",235], halife:["Halîfe b. Hayyât",240],
+ ahmed:["Ahmed b. Hanbel",241], hennad:["Hennâd b. Serî",243], abdbhumeyd:["Abd b. Humeyd",249],
+ darimi:["Dârimî",255], buhari:["Buhârî",256], muslim:["Müslim b. Haccâc",261], icli:["İclî",261],
+ ibnmace:["İbn Mâce",273], ebudavud:["Ebû Dâvûd es-Sicistânî",275], ibnkuteybe:["İbn Kuteybe",276],
+ tirmizi:["Tirmizî",279], ibnebiddunya:["İbn Ebü'd-Dünyâ",281], ibnebiasim:["İbn Ebû Âsım",287],
+ bezzar:["Bezzâr",292], mervezi:["Muhammed b. Nasr el-Mervezî",294], nesai:["Nesâî",303],
+ ebuyala:["Ebû Ya'lâ el-Mevsılî",307], taberi:["Taberî",310], ibnhuzeyme:["İbn Huzeyme",311],
+ ebuavane:["Ebû Avâne el-İsferâyînî",316], tahavi:["Tahâvî",321], ukayli:["Ukaylî",322],
+ ibnebihatim:["İbn Ebû Hâtim er-Râzî",327], kuleyni:["Küleynî",329], ibnhibban:["İbn Hibbân",354],
+ taberani:["Taberânî",360], ramhurmuzi:["Râmhürmüzî",360], ibnadi:["İbn Adî",365],
+ ibnbabeveyh:["İbn Bâbeveyh (Şeyh Sadûk)",381], askeri:["Ebû Ahmed el-Askerî",382], darekutni:["Dârekutnî",385],
+ ibnsahin:["İbn Şâhîn",385], hattabi:["Hattâbî",388], herevi:["Ebû Ubeyd el-Herevî",401],
+ hakim:["Hâkim en-Nîsâbûrî",405], ibnfurek:["İbn Fûrek",406], ebunuaym:["Ebû Nuaym el-İsfahânî",430],
+ ibnbattal:["İbn Battâl",449], kudai:["Kudâî",454], beyhaki:["Beyhakî",458], tusi:["Şeyh Tûsî",460],
+ hatib:["Hatîb el-Bağdâdî",463], ibnabdilber:["İbn Abdilber",463], baci:["Ebü'l-Velîd el-Bâcî",474],
+ humeydi2:["Muhammed b. Fütûh el-Humeydî",488], deylemi:["Şîreveyh ed-Deylemî",509], begavi:["Begavî",516],
+ mazeri:["Mâzerî",536], zemahseri:["Zemahşerî",538], ibnularabi:["Ebû Bekir İbnü'l-Arabî",543],
+ iyaz:["Kādî Iyâz",544], semani:["Sem'ânî",562], ibnasakir:["İbn Asâkir",571], ibnhayr:["İbn Hayr el-İşbîlî",575],
+ ibnbeskuval:["İbn Beşküvâl",578], hazimi:["Hâzimî",584], ibnulcevzi:["İbnü'l-Cevzî",597],
+ abdulgani:["Abdülganî el-Makdisî",600], mecdibnulesir:["Mecdüddin İbnü'l-Esîr",606],
+ izzibnulesir:["İzzeddin İbnü'l-Esîr",630], ibnussalah:["İbnü's-Salâh",643], sagani:["Sağânî",650],
+ mecdibnteymiyye:["Mecdüddin İbn Teymiyye",652], munziri:["Münzirî",656], kurtubi:["Ebü'l-Abbâs el-Kurtubî",656],
+ nevevi:["Nevevî",676], ibndakik:["İbn Dakīkul'îd",702], tebrizi:["Hatîb et-Tebrîzî",741], mizzi:["Mizzî",742],
+ tibi:["Tîbî",743], zehebi:["Zehebî",748], alai:["Alâî",761], zeylai:["Zeylaî",762], ibnkesir:["İbn Kesîr",774],
+ kirmani:["Şemseddin el-Kirmânî",786], ibnreceb:["İbn Receb el-Hanbelî",795], ibnulmulakkin:["İbnü'l-Mülakkın",804],
+ iraki:["Zeynüddin el-Irâkī",806], heysemi:["Nûreddin el-Heysemî",807], busiri:["Şehâbeddin el-Bûsîrî",840],
+ sibt:["Sıbt İbnü'l-Acemî",841], ibnhacer:["İbn Hacer el-Askalânî",852], ayni:["Bedreddin el-Aynî",855],
+ zebidi1:["Zeynüddin ez-Zebîdî",893], sehavi:["Sehâvî",902], suyuti:["Süyûtî",911], kastallani:["Kastallânî",923],
+ ibnarrak:["İbn Arrâk",963], muttaki:["Ali el-Müttakī el-Hindî",975], fetteni:["Muhammed Tâhir el-Fettenî",986],
+ aliyyulkari:["Aliyyü'l-Kārî",1014], munavi:["Abdürrauf el-Münâvî",1031], ibnhamza:["İbn Hamza el-Hüseynî",1120],
+ zurkani:["Muhammed ez-Zürkānî",1122], sindi:["Ebü'l-Hasan es-Sindî",1138], acluni:["Aclûnî",1162],
+ dehlevi:["Şah Veliyyullah ed-Dihlevî",1176], sanani:["Emîr es-San'ânî",1182], sevkani:["Şevkânî",1250],
+ leknevi:["Abdülhay el-Leknevî",1304], gumushanevi:["Ahmed Ziyâeddin Gümüşhânevî",1311],
+ azimabadi:["Şemsülhak el-Azîmâbâdî",1329], kasimi:["Cemâleddin el-Kāsımî",1332], cezairi:["Tâhir el-Cezâirî",1338],
+ kettani1:["Muhammed b. Ca'fer el-Kettânî",1345], seharanpuri:["Halîl Ahmed es-Sehâranpûrî",1346],
+ mubarekfuri:["Abdurrahman el-Mübârekfûrî",1353], naim:["Babanzâde Ahmed Naim",1353],
+ kettani2:["Abdülhay el-Kettânî",1382], tehanevi:["Zafer Ahmed et-Tehânevî",1394],
+ kandehlevi:["Muhammed Zekeriyyâ el-Kândehlevî",1402], elbani:["Nâsırüddin el-Elbânî",1420]
+};
+
+/* ---------- Türler ---------- */
+const CATS = {
+ kaynak:{s:"Temel kaynaklar", p:"temel rivayet kaynaklarından (sahîh, sünen, müsned, musannef, mu'cem)"},
+ serh:{s:"Şerhler", p:"hadis şerhlerinden"},
+ usul:{s:"Usûl-i hadis", p:"usûl-i hadis eserlerinden"},
+ rical:{s:"Ricâl · Cerh-ta'dîl · Tarih", p:"ricâl, cerh-ta'dîl, tabakât ve tarih eserlerinden"},
+ ilel:{s:"İlel", p:"ilelü'l-hadîs eserlerinden"},
+ mevzu:{s:"Mevzûât · Meşhur hadisler", p:"mevzû ve dillerde dolaşan hadislere dair eserlerden"},
+ garib:{s:"Garîbü'l-hadîs", p:"garîbü'l-hadîs (hadislerdeki nadir kelimeler) eserlerinden"},
+ muhtelif:{s:"Muhtelif · Müşkil · Nâsih-mensûh", p:"muhtelif/müşkilü'l-hadîs veya nâsih-mensûh eserlerinden"},
+ tahric:{s:"Tahrîc · Zevâid · Etrâf", p:"tahrîc, zevâid veya etrâf eserlerinden"},
+ cem:{s:"Cem' / Derleme", p:"farklı kaynakları bir araya getiren cem' (derleme) eserlerinden"},
+ konu:{s:"Konulu eserler", p:"konulu hadis eserlerinden (ahkâm, tergîb, zühd, erbaîn, edeb, şemâil)"},
+ siyer:{s:"Siyer · Meğâzî · Delâil", p:"siyer, meğâzî ve delâil eserlerinden"},
+ yardimci:{s:"Yardımcı ilimler · Fihrist", p:"yardımcı hadis ilimleri ve fihrist eserlerinden (mübhemât, esbâb, tashîf, fehrese)"},
+ sia:{s:"Şîa kaynakları", p:"Şîa'nın dört temel hadis kitabından (Kütüb-i Erbaa)"}
+};
+
+/* ---------- Eserler: [ad, müellif, tür, {of: şerh/çalışma konusu, alt: diğer uygun türler, n: not}] ---------- */
+const E = [
+ // Temel kaynaklar
+ ["es-Sahîfe","hemmam","kaynak",{n:"Ebû Hüreyre'den aldığı rivayetler; günümüze ulaşan en eski hadis mecmualarından."}],
+ ["el-Câmi'","mamer","kaynak",{n:"Abdürrezzâk'ın el-Musannef'inin sonunda yer alır; erken dönem câmi' örneği."}],
+ ["el-Muvatta'","malik","kaynak",{n:"Medine amelini de yansıtan, fıkıh bablarına göre tertip edilmiş ilk büyük eserlerden."}],
+ ["el-Müsned","tayalisi","kaynak",{n:"Günümüze ulaşan en eski müsnedlerden biri."}],
+ ["el-Musannef","abdurrezzak","kaynak",{n:"Merfû hadislerin yanında sahâbe ve tâbiûn fetvalarını da içerir."}],
+ ["el-Müsned","humeydi1","kaynak",{n:"Müellif, Buhârî'nin hocası ve Mekke muhaddisidir."}],
+ ["es-Sünen","saidbmansur","kaynak",{n:"Erken dönem sünen türünün önemli örneklerinden."}],
+ ["el-Musannef","ibnebiseybe","kaynak",{n:"Musannef türünün en hacimli örneklerinden; mevkuf ve maktû rivayetler açısından zengindir."}],
+ ["el-Müsned","ahmed","kaynak",{n:"Yaklaşık 27.000 rivayetle müsned türünün en büyük ve en meşhur örneği."}],
+ ["el-Müntehab (Müsned)","abdbhumeyd","kaynak",{n:"Müellifin büyük müsnedinden yapılmış seçmedir."}],
+ ["el-Müsned (es-Sünen)","darimi","kaynak",{n:"Bazı âlimlerce Kütüb-i Sitte'nin altıncısı sayılmıştır."}],
+ ["el-Câmiu's-sahîh","buhari","kaynak",{n:"Kütüb-i Sitte'nin ilki; Kur'an'dan sonra en sahih kitap kabul edilir."}],
+ ["el-Müsnedü's-sahîh","muslim","kaynak",{n:"Sahîh-i Müslim; tertip ve tarîklerin bir arada verilmesiyle öne çıkar."}],
+ ["es-Sünen","ibnmace","kaynak",{n:"Kütüb-i Sitte'nin altıncısı olarak en yaygın kabul gören sünen."}],
+ ["es-Sünen","ebudavud","kaynak",{n:"Ahkâm hadislerine odaklanan sünenlerin başında gelir."}],
+ ["el-Câmi' (es-Sünen)","tirmizi","kaynak",{n:"Hadislerin hükmünü (hasen, sahih, garîb) bildirmesiyle tanınır."}],
+ ["el-Müctebâ (es-Sünenü's-suğrâ)","nesai","kaynak",{n:"Kütüb-i Sitte'de yer alan Nesâî sünenidir."}],
+ ["es-Sünenü'l-kübrâ","nesai","kaynak",{n:"el-Müctebâ'nın aslı olan geniş sünen."}],
+ ["el-Bahrü'z-zehhâr (Müsned)","bezzar","kaynak",{n:"Rivayetlerin illetlerine de değinen muallel müsned."}],
+ ["el-Müsned","ebuyala","kaynak",{n:"Zevâid çalışmalarında sıkça kullanılan müsnedlerden."}],
+ ["es-Sahîh","ibnhuzeyme","kaynak",{n:"Asıl adı Muhtasarü'l-muhtasar'dır; sahihi esas alan erken eserlerden."}],
+ ["el-Müstahrec alâ Sahîhi Müslim","ebuavane","kaynak",{n:"Müstahrec türünün en meşhur örneği: Müslim'in hadislerini kendi senediyle rivayet eder."}],
+ ["Şerhu meâni'l-âsâr","tahavi","kaynak",{alt:["muhtelif","konu","serh"],n:"İsmine rağmen başka bir kitabın şerhi değildir; ahkâm hadislerini ve aralarındaki ihtilafı ele alır."}],
+ ["et-Takāsîm ve'l-envâ'","ibnhibban","kaynak",{n:"Sahîh-i İbn Hibbân olarak bilinir; kendine özgü bir tasnif düzeni vardır."}],
+ ["el-Mu'cemü'l-kebîr","taberani","kaynak",{n:"Sahâbe isimlerine göre tertip edilmiş büyük mu'cem."}],
+ ["el-Mu'cemü'l-evsat","taberani","kaynak",{n:"Hocalarının isimlerine göre tertip edilmiş, garîb rivayetler açısından zengin mu'cem."}],
+ ["el-Mu'cemü's-sağîr","taberani","kaynak",{n:"Her hocasından genellikle bir hadis aldığı küçük mu'cem."}],
+ ["es-Sünen","darekutni","kaynak",{n:"Rivayetlerin illetlerini ve farklı tarîklerini göstermesiyle bilinir."}],
+ ["el-Müstedrek ale's-Sahîhayn","hakim","kaynak",{n:"Buhârî ve Müslim'in şartlarına uyduğunu düşündüğü, ancak onların almadığı hadisler."}],
+ ["Müsnedü'ş-Şihâb","kudai","kaynak",{n:"Müellifin kendi derlediği kısa hadisleri (eş-Şihâb) senedleriyle verdiği eser."}],
+ ["es-Sünenü'l-kübrâ","beyhaki","kaynak",{n:"Şâfiî fıkhının delillerini toplayan en kapsamlı sünenlerden."}],
+ ["Firdevsü'l-ahbâr","deylemi","kaynak",{alt:["cem"],n:"Senedsiz kısa hadisleri alfabetik sıralar; zayıf rivayet oranı yüksektir."}],
+ ["Şerhu's-sünne","begavi","kaynak",{alt:["serh","konu"],n:"Adı şerh olsa da müellifin kendi senedleriyle rivayet edip açıkladığı müstakil bir eserdir."}],
+
+ // Cem'
+ ["el-Cem' beyne's-Sahîhayn","humeydi2","cem",{n:"Buhârî ve Müslim'in hadislerini sahâbe esasına göre bir araya getirir."}],
+ ["Mesâbîhu's-sünne","begavi","cem",{n:"Hadisleri 'sıhâh' ve 'hısân' diye ayırarak senedsiz derler."}],
+ ["Mişkâtü'l-mesâbîh","tebrizi","cem",{of:"Begavî'nin Mesâbîhu's-sünne'si",n:"Mesâbîh'i kaynaklarını belirterek genişletir; Hint alt kıtasında çok okunmuştur."}],
+ ["Câmiu'l-usûl li-ehâdîsi'r-Resûl","mecdibnulesir","cem",{n:"Kütüb-i Sitte (İbn Mâce yerine Muvatta') hadislerini bir araya getirir."}],
+ ["el-Câmiu's-sağîr","suyuti","cem",{n:"Kısa (kavlî) hadisleri alfabetik sıralar; her hadisin yanında hüküm remizleri vardır."}],
+ ["Cem'u'l-cevâmi' (el-Câmiu'l-kebîr)","suyuti","cem",{n:"Bütün hadisleri bir araya getirme hedefiyle yazılmış büyük derleme."}],
+ ["Kenzü'l-ummâl","muttaki","cem",{n:"Süyûtî'nin Cem'u'l-cevâmi' ve diğer câmi'lerini fıkıh bablarına göre yeniden tertip eder."}],
+ ["et-Tecrîdü's-sarîh","zebidi1","cem",{of:"Buhârî'nin el-Câmiu's-sahîh'i",n:"Sahîh-i Buhârî'nin tekrarsız ve senedsiz muhtasarı."}],
+ ["Râmûzü'l-ehâdîs","gumushanevi","cem",{n:"Osmanlı medrese ve tekkelerinde en çok okunan hadis derlemelerinden."}],
+
+ // Şerhler
+ ["Meâlimü's-sünen","hattabi","serh",{of:"Sünen-i Ebû Dâvûd",n:"Ebû Dâvûd'un Sünen'ine yazılmış ilk şerh."}],
+ ["A'lâmü'l-hadîs","hattabi","serh",{of:"Sahîh-i Buhârî",n:"Buhârî'ye yazılmış ilk şerh kabul edilir."}],
+ ["Şerhu Sahîhi'l-Buhârî","ibnbattal","serh",{of:"Sahîh-i Buhârî",n:"Endülüslü müellifin fıkhî ağırlıklı şerhi."}],
+ ["el-Kevâkibü'd-derârî","kirmani","serh",{of:"Sahîh-i Buhârî",n:"Dil ve i'râb meselelerine geniş yer veren şerh."}],
+ ["Fethu'l-bârî","ibnhacer","serh",{of:"Sahîh-i Buhârî",n:"Buhârî şerhlerinin en meşhuru; mukaddimesi Hedyü's-sârî'dir."}],
+ ["Fethu'l-bârî","ibnreceb","serh",{of:"Sahîh-i Buhârî",n:"İbn Hacer'inkiyle aynı adı taşır; eksik olarak günümüze ulaşmıştır."}],
+ ["Umdetü'l-kārî","ayni","serh",{of:"Sahîh-i Buhârî",n:"Hanefî bakış açısıyla yazılmış büyük şerh; Fethu'l-bârî ile çağdaştır."}],
+ ["İrşâdü's-sârî","kastallani","serh",{of:"Sahîh-i Buhârî",n:"Önceki büyük şerhleri özetleyen, rivayet farklarına önem veren şerh."}],
+ ["et-Tavzîh li-şerhi'l-Câmii's-sahîh","ibnulmulakkin","serh",{of:"Sahîh-i Buhârî",n:"Geniş hacimli erken Memlük dönemi şerhi."}],
+ ["el-Mu'lim bi-fevâidi Müslim","mazeri","serh",{of:"Sahîh-i Müslim",n:"Müslim üzerine yazılmış ilk şerhlerden."}],
+ ["İkmâlü'l-Mu'lim","iyaz","serh",{of:"Sahîh-i Müslim",n:"Mâzerî'nin el-Mu'lim'ini tamamlar."}],
+ ["el-Müfhim","kurtubi","serh",{of:"Sahîh-i Müslim",n:"Müellifin kendi yaptığı Müslim muhtasarının şerhi."}],
+ ["el-Minhâc şerhu Sahîhi Müslim","nevevi","serh",{of:"Sahîh-i Müslim",n:"Müslim şerhlerinin en yaygın okunanı."}],
+ ["Bezlü'l-mechûd","seharanpuri","serh",{of:"Sünen-i Ebû Dâvûd",n:"Hint Hanefî âlimlerinin büyük Ebû Dâvûd şerhi."}],
+ ["Avnü'l-ma'bûd","azimabadi","serh",{of:"Sünen-i Ebû Dâvûd",n:"Ehl-i hadis çevresinden yaygın Ebû Dâvûd şerhi."}],
+ ["Âridatü'l-ahvezî","ibnularabi","serh",{of:"Sünen-i Tirmizî",n:"Tirmizî'nin ilk büyük şerhi."}],
+ ["Tuhfetü'l-ahvezî","mubarekfuri","serh",{of:"Sünen-i Tirmizî",n:"Modern dönemin en çok kullanılan Tirmizî şerhi."}],
+ ["Şerhu İleli't-Tirmizî","ibnreceb","serh",{of:"Tirmizî'nin el-İlelü's-sağîr'i",alt:["ilel","usul"],n:"İlel ilminin kurallarını sistemli biçimde ortaya koyar."}],
+ ["Hâşiye alâ Süneni'n-Nesâî","sindi","serh",{of:"Sünen-i Nesâî",n:"Kısa ve pratik hâşiye; İbn Mâce'ye de benzer hâşiyesi vardır."}],
+ ["et-Temhîd","ibnabdilber","serh",{of:"Muvatta'",n:"Muvatta' hadislerini İmam Mâlik'in hocalarına göre tertip ederek açıklar."}],
+ ["el-İstizkâr","ibnabdilber","serh",{of:"Muvatta'",n:"Muvatta'ın bab tertibine göre, fıkhî görüşlere ağırlık veren şerh."}],
+ ["el-Müntekā şerhu'l-Muvatta'","baci","serh",{of:"Muvatta'",n:"Mâlikî fıkhı açısından önemli şerh."}],
+ ["Şerhu'l-Muvatta'","zurkani","serh",{of:"Muvatta'",n:"Geç dönemin en yaygın Muvatta' şerhi."}],
+ ["el-Musaffâ","dehlevi","serh",{of:"Muvatta'",n:"Farsça Muvatta' şerhi; Arapçası el-Müsevvâ'dır."}],
+ ["Evcezü'l-mesâlik","kandehlevi","serh",{of:"Muvatta'",n:"Hanefî bakışla yazılmış kapsamlı modern Muvatta' şerhi."}],
+ ["el-Kâşif an hakāiki's-sünen","tibi","serh",{of:"Mişkâtü'l-mesâbîh",n:"Mişkât'ın en önemli ilk şerhi; belâgat ağırlıklıdır."}],
+ ["Mirkātü'l-mefâtîh","aliyyulkari","serh",{of:"Mişkâtü'l-mesâbîh",n:"Mişkât şerhlerinin en meşhuru."}],
+ ["Feyzü'l-kadîr","munavi","serh",{of:"Süyûtî'nin el-Câmiu's-sağîr'i",n:"el-Câmiu's-sağîr'in büyük şerhi."}],
+ ["İhkâmü'l-ahkâm","ibndakik","serh",{of:"Umdetü'l-ahkâm",n:"Ahkâm hadislerinden hüküm çıkarma yöntemini gösteren şerh."}],
+ ["Sübülü's-selâm","sanani","serh",{of:"Bulûğu'l-merâm",n:"Bulûğu'l-merâm'ın en yaygın şerhi."}],
+ ["Neylü'l-evtâr","sevkani","serh",{of:"Mecdüddin İbn Teymiyye'nin el-Müntekā'sı",n:"Ahkâm hadisleri üzerine kapsamlı mukayeseli fıkıh şerhi."}],
+ ["Câmiu'l-ulûm ve'l-hikem","ibnreceb","serh",{of:"Nevevî'nin el-Erbaûn'u",n:"Kırk hadisi elli hadise tamamlayarak şerh eder."}],
+ ["Tecrîd-i Sarîh Tercemesi","naim","serh",{of:"et-Tecrîdü's-sarîh",n:"Türkçe tercüme ve şerh; ilk iki cildi Ahmed Naim, kalanını Kâmil Miras hazırladı."}],
+
+ // Usûl
+ ["er-Risâle","safii","usul",{alt:["muhtelif"],n:"Fıkıh usûlü eseri; haber-i vâhid ve hadisin delil değeri hakkındaki ilk sistemli tartışmaları içerir."}],
+ ["el-Muhaddisü'l-fâsıl beyne'r-râvî ve'l-vâî","ramhurmuzi","usul",{n:"Hadis usûlünde ilk müstakil eser kabul edilir."}],
+ ["Ma'rifetü ulûmi'l-hadîs","hakim","usul",{n:"Hadis ilimlerini 52 nevi hâlinde ele alır."}],
+ ["el-Müstahrec alâ Ma'rifeti ulûmi'l-hadîs","ebunuaym","usul",{of:"Hâkim'in Ma'rifetü ulûmi'l-hadîs'i",n:"Hâkim'in eserine yazılmış müstahrec."}],
+ ["el-Kifâye fî ilmi'r-rivâye","hatib","usul",{n:"Rivayet usûlünün en temel kaynaklarından."}],
+ ["el-Câmi' li-ahlâki'r-râvî ve âdâbi's-sâmi'","hatib","usul",{alt:["konu"],n:"Muhaddis ve talebenin uyacağı âdâbı anlatır."}],
+ ["Takyîdü'l-ilm","hatib","usul",{n:"Hadislerin yazılması meselesine dair rivayetleri toplar."}],
+ ["er-Rıhle fî talebi'l-hadîs","hatib","usul",{n:"Hadis için yapılan yolculuklara dair."}],
+ ["Câmiu beyâni'l-ilm ve fazlih","ibnabdilber","usul",{alt:["konu"],n:"İlim ve öğrenme âdâbına dair rivayetler."}],
+ ["el-İlmâ'","iyaz","usul",{n:"Tahammül ve edâ (hadis alma ve aktarma) yollarına odaklanır."}],
+ ["Ulûmü'l-hadîs (Mukaddime)","ibnussalah","usul",{n:"Kendinden sonraki usûl literatürünün merkezi; 65 nevi."}],
+ ["et-Takrîb ve't-teysîr","nevevi","usul",{of:"İbnü's-Salâh'ın Mukaddime'si",n:"Mukaddime'nin ihtisarı."}],
+ ["el-İktirâh fî beyâni'l-ıstılâh","ibndakik","usul",{n:"Kısa ama yoğun usûl metni."}],
+ ["el-Mûkıza","zehebi","usul",{n:"Kısa usûl risalesi; cerh-ta'dîle dair değerli notlar içerir."}],
+ ["İhtisâru ulûmi'l-hadîs","ibnkesir","usul",{of:"İbnü's-Salâh'ın Mukaddime'si",n:"Ahmed Şâkir şerhiyle el-Bâisü'l-hasîs adıyla yaygınlaşmıştır."}],
+ ["et-Takyîd ve'l-îzâh","iraki","usul",{of:"İbnü's-Salâh'ın Mukaddime'si",alt:["serh"],n:"Mukaddime üzerine tenkit ve açıklamalar."}],
+ ["et-Tebsıra ve't-tezkire (Elfiyye)","iraki","usul",{n:"Bin beyitlik manzum usûl; Elfiyyetü'l-Irâkī diye bilinir."}],
+ ["Nuhbetü'l-fiker","ibnhacer","usul",{n:"Usûlün en çok okunan kısa metni."}],
+ ["Nüzhetü'n-nazar","ibnhacer","usul",{of:"Nuhbetü'l-fiker",alt:["serh"],n:"Müellifin kendi metnine yazdığı şerh."}],
+ ["Fethu'l-muğîs","sehavi","usul",{of:"Irâkī'nin Elfiyye'si",alt:["serh"],n:"Elfiyye'nin en geniş şerhi."}],
+ ["Tedrîbü'r-râvî","suyuti","usul",{of:"Nevevî'nin et-Takrîb'i",alt:["serh"],n:"Takrîb'in şerhi; geç dönemin temel usûl kitaplarından."}],
+ ["Şerhu Şerhi Nuhbeti'l-fiker","aliyyulkari","usul",{of:"Nüzhetü'n-nazar",alt:["serh"],n:"Nüzhe üzerine yazılmış şerh."}],
+ ["er-Ref' ve't-tekmîl fi'l-cerh ve't-ta'dîl","leknevi","usul",{alt:["rical"],n:"Cerh-ta'dîlin kurallarını inceleyen usûl eseri."}],
+ ["Kavâidü't-tahdîs","kasimi","usul",{n:"Modern dönemin başlıca usûl eserlerinden."}],
+ ["Tevcîhü'n-nazar ilâ usûli'l-eser","cezairi","usul",{n:"Klasik usûlü yeniden düzenleyen modern dönem eseri."}],
+ ["Kavâid fî ulûmi'l-hadîs","tehanevi","usul",{n:"Hanefî usûl anlayışını öne çıkarır; İ'lâü's-sünen'in mukaddimesidir."}],
+ ["et-Temyîz","muslim","usul",{alt:["ilel"],n:"Hatalı rivayetlerin nasıl tespit edileceğini örneklerle gösterir."}],
+
+ // Ricâl, cerh-ta'dîl, tarih
+ ["et-Tabakātü'l-kübrâ","ibnsad","rical",{alt:["siyer"],n:"Tabakât türünün en eski ve en kapsamlı örneklerinden; ilk ciltleri siyerdir."}],
+ ["et-Târîh (Dûrî rivayeti)","ibnmain","rical",{n:"Ravileri değerlendiren, cerh-ta'dîlin kurucu metinlerinden."}],
+ ["et-Tabakāt","halife","rical",{n:"Râvileri yaşadıkları şehir ve nesillere göre sınıflar."}],
+ ["et-Târîhu'l-kebîr","buhari","rical",{n:"Ravilerin hal tercümelerini veren ilk büyük ricâl eseri."}],
+ ["ed-Duafâü's-sağîr","buhari","rical",{n:"Zayıf ravilere dair kısa eser."}],
+ ["Ma'rifetü's-sikāt","icli","rical",{n:"Güvenilir ravileri tanıtan erken eser."}],
+ ["ed-Duafâ ve'l-metrûkîn","nesai","rical",{n:"Zayıf ve terk edilmiş raviler."}],
+ ["ed-Duafâ ve'l-metrûkîn","darekutni","rical",{n:"Aynı adı taşıyan Dârekutnî eseri."}],
+ ["ed-Duafâü'l-kebîr","ukayli","rical",{n:"Zayıf raviler ve onların münker rivayetleri."}],
+ ["el-Cerh ve't-ta'dîl","ibnebihatim","rical",{n:"Mukaddimesinde cerh-ta'dîl mertebelerini ilk kez sistemli biçimde verir."}],
+ ["Kitâbü'l-Merâsîl","ibnebihatim","rical",{alt:["usul"],n:"Hangi ravinin kimden işitmediğini (inkıtâ) gösterir."}],
+ ["es-Sikāt","ibnhibban","rical",{n:"Güvenilir raviler; tevsîkte gevşek olmakla eleştirilmiştir."}],
+ ["el-Mecrûhîn","ibnhibban","rical",{n:"Cerh edilmiş raviler."}],
+ ["el-Kâmil fî duafâi'r-ricâl","ibnadi","rical",{n:"Zayıf ravileri münker rivayetleriyle birlikte inceleyen büyük eser."}],
+ ["Târîhu Bağdâd","hatib","rical",{n:"Bağdat'ta yaşamış veya oraya gelmiş binlerce kişinin biyografisi."}],
+ ["el-İstîâb fî ma'rifeti'l-ashâb","ibnabdilber","rical",{n:"Sahâbe biyografileri."}],
+ ["el-Ensâb","semani","rical",{alt:["yardimci"],n:"Nisbeleri (Buhârî, Nîsâbûrî vb.) açıklayan ensâb eseri."}],
+ ["Târîhu medîneti Dımaşk","ibnasakir","rical",{n:"Şehir tarihlerinin en hacimlisi."}],
+ ["el-Kemâl fî esmâi'r-ricâl","abdulgani","rical",{n:"Kütüb-i Sitte ravilerini toplayan ilk büyük eser."}],
+ ["Üsdü'l-ğâbe fî ma'rifeti's-sahâbe","izzibnulesir","rical",{n:"Önceki sahâbe kitaplarını birleştirir."}],
+ ["el-Kâmil fi't-târîh","izzibnulesir","rical",{n:"Genel İslam tarihi."}],
+ ["Tehzîbü'l-Kemâl","mizzi","rical",{of:"Abdülganî el-Makdisî'nin el-Kemâl'i",n:"el-Kemâl'i düzeltip genişletir; ricâl literatürünün zirvesi."}],
+ ["Mîzânü'l-i'tidâl","zehebi","rical",{n:"Hakkında söz edilmiş ravilerin geniş listesi."}],
+ ["Siyeru a'lâmi'n-nübelâ","zehebi","rical",{n:"Meşhur şahsiyetlerin biyografileri."}],
+ ["Tezkiretü'l-huffâz","zehebi","rical",{n:"Hâfız mertebesindeki muhaddislerin tabakâtı."}],
+ ["el-Kâşif","zehebi","rical",{n:"Kütüb-i Sitte ravilerini kısaca değerlendirir."}],
+ ["Târîhu'l-İslâm","zehebi","rical",{n:"Yıllara ve tabakalara göre büyük İslam tarihi."}],
+ ["Câmiu't-tahsîl fî ahkâmi'l-merâsîl","alai","rical",{alt:["usul"],n:"Mürsel rivayetlere ve inkıtâa dair."}],
+ ["el-Bidâye ve'n-nihâye","ibnkesir","rical",{alt:["siyer"],n:"Yaratılıştan kıyamete uzanan genel tarih."}],
+ ["Târîhu'r-rusül ve'l-mülûk","taberi","rical",{n:"İsnadlı rivayetlere dayanan ilk büyük genel tarihlerden."}],
+ ["el-Muntazam","ibnulcevzi","rical",{n:"Yıllara göre tarih ve vefeyât."}],
+ ["et-Tebyîn li-esmâi'l-müdellisîn","sibt","rical",{n:"Tedlîs yapan ravilere dair."}],
+ ["Tehzîbü't-Tehzîb","ibnhacer","rical",{of:"Mizzî'nin Tehzîbü'l-Kemâl'i",n:"Tehzîbü'l-Kemâl'in ihtisarı ve ilaveleri."}],
+ ["Takrîbü't-Tehzîb","ibnhacer","rical",{of:"Tehzîbü't-Tehzîb",n:"Her raviye tek cümlelik hüküm; en pratik ricâl kitabı."}],
+ ["Lisânü'l-Mîzân","ibnhacer","rical",{of:"Zehebî'nin Mîzânü'l-i'tidâl'i",n:"Mîzân'daki Kütüb-i Sitte dışı ravileri genişletir."}],
+ ["el-İsâbe fî temyîzi's-sahâbe","ibnhacer","rical",{n:"Sahâbe biyografilerinin en kapsamlısı."}],
+ ["Tabakātü'l-müdellisîn","ibnhacer","rical",{n:"Asıl adı Ta'rîfü ehli't-takdîs; müdellisleri beş tabakaya ayırır."}],
+ ["ed-Dav'ü'l-lâmi'","sehavi","rical",{n:"9. hicrî asır şahsiyetlerinin biyografileri."}],
+
+ // İlel
+ ["el-İlel","ibnmedini","ilel",{n:"İlel ilminin öncü eserlerinden."}],
+ ["el-İlel ve ma'rifetü'r-ricâl","ahmed","ilel",{alt:["rical"],n:"Oğulları ve talebeleri tarafından rivayet edilen sorular ve cevaplar."}],
+ ["el-İlelü'l-kebîr","tirmizi","ilel",{n:"Buhârî ile yaptığı müzakerelerden çok nakil içerir."}],
+ ["el-İlelü's-sağîr","tirmizi","ilel",{alt:["usul"],n:"Sünen'in sonundaki kısa usûl ve ilel bölümü."}],
+ ["el-İlel","ibnebihatim","ilel",{n:"Babası Ebû Hâtim ve Ebû Zür'a'ya sorduğu illetli rivayetler."}],
+ ["el-İlelü'l-vâride fi'l-ehâdîsi'n-nebeviyye","darekutni","ilel",{n:"İlel türünün en kapsamlı örneği."}],
+ ["el-İlelü'l-mütenâhiye","ibnulcevzi","ilel",{alt:["mevzu"],n:"Zayıf ve sağlam olmayan hadisler."}],
+
+ // Mevzûât
+ ["el-Mevzûât","ibnulcevzi","mevzu",{n:"Mevzû hadisler alanının temel eseri; bazı hükümleri katı bulunmuştur."}],
+ ["el-Mevzûât","sagani","mevzu",{n:"Aynı adı taşıyan Sağânî eseri."}],
+ ["el-Leâli'l-masnûa","suyuti","mevzu",{of:"İbnü'l-Cevzî'nin el-Mevzûât'ı",n:"İbnü'l-Cevzî'nin kitabını ihtisar edip değerlendirir."}],
+ ["Tenzîhü'ş-şerîati'l-merfûa","ibnarrak","mevzu",{n:"Önceki mevzûât kitaplarını birleştirir."}],
+ ["Tezkiretü'l-mevzûât","fetteni","mevzu",{n:"Konulara göre tertip edilmiş mevzûât derlemesi."}],
+ ["el-Esrârü'l-merfûa","aliyyulkari","mevzu",{n:"Mevzû hadisler ve bunları tanıma ölçüleri."}],
+ ["el-Makāsıdü'l-hasene","sehavi","mevzu",{n:"Halk arasında meşhur olan sözlerin hadis olup olmadığını inceler."}],
+ ["Keşfü'l-hafâ","aclûni","mevzu",{n:"el-Makāsıdü'l-hasene'yi esas alıp genişletir."}],
+ ["el-Fevâidü'l-mecmûa","sevkani","mevzu",{n:"Mevzû hadisleri konulara göre toplar."}],
+ ["Silsiletü'l-ehâdîsi'd-daîfe ve'l-mevzûa","elbani","mevzu",{n:"Modern dönemin geniş zayıf ve mevzû hadis çalışması."}],
+
+ // Garîb
+ ["Garîbü'l-hadîs","ebuubeyd","garib",{n:"Garîbü'l-hadîs alanının ilk büyük ve sistemli eseri."}],
+ ["Garîbü'l-hadîs","ibnkuteybe","garib",{n:"Ebû Ubeyd'in eserini tamamlamak üzere yazılmıştır."}],
+ ["Garîbü'l-hadîs","hattabi","garib",{n:"Önceki iki büyük eserde bulunmayan kelimeleri ele alır."}],
+ ["Kitâbü'l-Garîbeyn","herevi","garib",{n:"Kur'an ve hadisteki garîb kelimeleri birlikte açıklar."}],
+ ["el-Fâik fî garîbi'l-hadîs","zemahseri","garib",{n:"Hadis metnini bütün olarak verip açıklar."}],
+ ["en-Nihâye fî garîbi'l-hadîs ve'l-eser","mecdibnulesir","garib",{n:"Alfabetik tertibiyle en çok kullanılan garîb sözlüğü."}],
+ ["Meşâriku'l-envâr","iyaz","garib",{n:"Muvatta', Buhârî ve Müslim'deki garîb kelimeler ve isim zabtı."}],
+
+ // Muhtelif, müşkil, nâsih-mensûh
+ ["İhtilâfü'l-hadîs","safii","muhtelif",{n:"Çelişkili görünen hadisler alanının ilk eseri."}],
+ ["Te'vîlü muhtelifi'l-hadîs","ibnkuteybe","muhtelif",{n:"Kelâmcıların hadislere yönelttiği itirazlara cevap verir."}],
+ ["Şerhu müşkili'l-âsâr","tahavi","muhtelif",{n:"Anlaşılması güç veya çelişkili görünen rivayetleri izah eder."}],
+ ["Müşkilü'l-hadîs ve beyânüh","ibnfurek","muhtelif",{n:"Sıfât hadislerini kelâmî açıdan yorumlar."}],
+ ["Nâsihu'l-hadîs ve mensûhuh","ibnsahin","muhtelif",{n:"Hadislerde nesih konusunun erken eserlerinden."}],
+ ["el-İ'tibâr fi'n-nâsih ve'l-mensûh mine'l-âsâr","hazimi","muhtelif",{n:"Nâsih-mensûh alanının en meşhur eseri."}],
+
+ // Tahrîc, zevâid, etrâf
+ ["Tuhfetü'l-eşrâf bi-ma'rifeti'l-etrâf","mizzi","tahric",{n:"Kütüb-i Sitte'nin etrâfı: her hadisin bu kitaplardaki yerleri."}],
+ ["Nasbu'r-râye","zeylai","tahric",{of:"Merğînânî'nin el-Hidâye'si",n:"Hanefî fıkıh kitabı el-Hidâye'deki hadislerin tahrîci; tahrîc türünün zirvesi."}],
+ ["el-Bedrü'l-münîr","ibnulmulakkin","tahric",{of:"Râfiî'nin eş-Şerhu'l-kebîr'i",n:"Şâfiî fıkıh kitabındaki hadislerin tahrîci."}],
+ ["el-Muğnî an hamli'l-esfâr","iraki","tahric",{of:"Gazzâlî'nin İhyâ'sı",n:"İhyâ'daki hadislerin tahrîci."}],
+ ["Mecmau'z-zevâid","heysemi","tahric",{n:"Altı kitapta olmayıp Ahmed, Bezzâr, Ebû Ya'lâ ve Taberânî'de bulunan hadisler."}],
+ ["Misbâhu'z-zücâce","busiri","tahric",{of:"Sünen-i İbn Mâce",n:"İbn Mâce'nin diğer beş kitapta bulunmayan hadisleri (zevâid)."}],
+ ["İthâfü'l-hıyere","busiri","tahric",{n:"On müsnedin zevâidi."}],
+ ["et-Telhîsü'l-habîr","ibnhacer","tahric",{of:"Râfiî'nin eş-Şerhu'l-kebîr'i",n:"el-Bedrü'l-münîr'in ihtisarı ve ilaveleri."}],
+ ["ed-Dirâye","ibnhacer","tahric",{of:"Merğînânî'nin el-Hidâye'si",n:"Nasbu'r-râye'nin ihtisarı."}],
+ ["el-Metâlibü'l-âliye","ibnhacer","tahric",{n:"Sekiz müsnedin zevâidi."}],
+ ["İthâfü'l-mehere","ibnhacer","tahric",{n:"On kitabın etrâfı."}],
+ ["Silsiletü'l-ehâdîsi's-sahîha","elbani","tahric",{n:"Modern dönemin geniş tahrîc ve tashih çalışması."}],
+
+ // Konulu eserler
+ ["ez-Zühd ve'r-rekāik","ibnmubarek","konu",{n:"Zühd türünün en eski eserlerinden."}],
+ ["ez-Zühd","ahmed","konu",{n:"Peygamberler, sahâbe ve tâbiûnun zühdüne dair rivayetler."}],
+ ["ez-Zühd","hennad","konu",{n:"Kûfeli muhaddisin zühd kitabı."}],
+ ["el-Edebü'l-müfred","buhari","konu",{n:"Ahlak ve âdâba dair hadisler."}],
+ ["eş-Şemâilü'l-Muhammediyye","tirmizi","konu",{n:"Hz. Peygamber'in görünüşü ve ahlakına dair en meşhur eser."}],
+ ["Mekârimü'l-ahlâk","ibnebiddunya","konu",{n:"Güzel ahlaka dair rivayetler; müellifin sayısız risalesinden biri."}],
+ ["es-Sünne","ibnebiasim","konu",{n:"Akaid konularındaki hadisler."}],
+ ["Kıyâmü'l-leyl","mervezi","konu",{n:"Gece namazına dair rivayetler."}],
+ ["Şuabü'l-îmân","beyhaki","konu",{n:"İmanın yetmiş küsur şubesini rivayetlerle açıklar."}],
+ ["Hilyetü'l-evliyâ","ebunuaym","konu",{alt:["rical"],n:"Zâhid ve velîlerin biyografileri ve rivayetleri."}],
+ ["Umdetü'l-ahkâm","abdulgani","konu",{n:"Buhârî ve Müslim'in ittifak ettiği ahkâm hadisleri."}],
+ ["el-Müntekā min ahbâri'l-Mustafâ","mecdibnteymiyye","konu",{n:"Ahkâm hadisleri; müellif Şeyhülislam İbn Teymiyye'nin dedesidir."}],
+ ["et-Tergîb ve't-terhîb","munziri","konu",{n:"Teşvik ve sakındırma hadislerinin en meşhur derlemesi."}],
+ ["el-Erbaûn","nevevi","konu",{n:"Dinin temel ilkelerini özetleyen kırk iki hadis."}],
+ ["Riyâzü's-sâlihîn","nevevi","konu",{alt:["cem"],n:"Ahlak ve âdâba dair en çok okunan hadis kitabı."}],
+ ["Bulûğu'l-merâm","ibnhacer","konu",{n:"Ahkâm hadislerinin kısa ve yaygın derlemesi."}],
+ ["İ'lâü's-sünen","tehanevi","konu",{n:"Hanefî mezhebinin hadis delillerini toplar."}],
+
+ // Siyer, meğâzî, delâil
+ ["es-Sîre (el-Mübtedâ ve'l-meb'as ve'l-meğâzî)","ibnishak","siyer",{n:"Siyerin temel kaynağı; İbn Hişâm'ın tehzîbiyle ulaşmıştır."}],
+ ["el-Meğâzî","vakidi","siyer",{n:"Gazveler hakkında ayrıntılı eser."}],
+ ["es-Sîretü'n-nebeviyye","ibnhisam","siyer",{of:"İbn İshak'ın es-Sîre'si",n:"İbn İshak'ın eserinin düzenlenmiş hâli."}],
+ ["Delâilü'n-nübüvve","beyhaki","siyer",{n:"Nübüvvetin delilleri ve mucizeler."}],
+ ["Delâilü'n-nübüvve","ebunuaym","siyer",{n:"Aynı adı taşıyan Ebû Nuaym eseri."}],
+ ["eş-Şifâ bi-ta'rîfi hukūki'l-Mustafâ","iyaz","siyer",{alt:["konu"],n:"Hz. Peygamber'in şemâil, faziletleri ve hakları."}],
+
+ // Yardımcı ilimler, fihrist
+ ["Tashîfâtü'l-muhaddisîn","askeri","yardimci",{n:"İsim ve metinlerde yapılan yazım hataları (tashîf)."}],
+ ["el-Mu'telif ve'l-muhtelif","darekutni","yardimci",{n:"Yazılışı aynı, okunuşu farklı isimler."}],
+ ["el-Muttefik ve'l-müfterik","hatib","yardimci",{n:"Aynı adı taşıyan farklı kişiler."}],
+ ["el-Esmâü'l-mübheme","hatib","yardimci",{n:"Rivayetlerde adı verilmeyen kişilerin tespiti (mübhemât)."}],
+ ["Ğavâmizü'l-esmâi'l-mübheme","ibnbeskuval","yardimci",{n:"Mübhemât alanında kapsamlı eser."}],
+ ["el-Fehrese","ibnhayr","yardimci",{n:"Endülüslü âlimin okuduğu kitapları isnadlarıyla verdiği fehrese."}],
+ ["el-Luma' fî esbâbi vürûdi'l-hadîs","suyuti","yardimci",{n:"Hadislerin söylenme sebepleri."}],
+ ["el-Beyân ve't-ta'rîf fî esbâbi vürûdi'l-hadîs","ibnhamza","yardimci",{n:"Esbâb-ı vürûd alanının en kapsamlı eseri."}],
+ ["er-Risâletü'l-müstatrafe","kettani1","yardimci",{n:"Hadis kaynaklarının bibliyografyası; tür tür eser tanıtır."}],
+ ["Fihrisü'l-fehâris ve'l-esbât","kettani2","yardimci",{n:"Fehrese, sebet ve meşyeha türü eserlerin ansiklopedisi."}],
+
+ // Şîa
+ ["el-Kâfî","kuleyni","sia",{n:"Kütüb-i Erbaa'nın ilki ve en önemlisi."}],
+ ["Men lâ yahduruhü'l-fakīh","ibnbabeveyh","sia",{n:"Kütüb-i Erbaa'nın ikincisi; fıkıh rivayetleri."}],
+ ["Tehzîbü'l-ahkâm","tusi","sia",{n:"Kütüb-i Erbaa'dan; fıkıh hadisleri."}],
+ ["el-İstibsâr","tusi","sia",{n:"Kütüb-i Erbaa'dan; çelişkili görünen haberleri uzlaştırır."}]
+];
+
+/* düzeltme: "aclûni" anahtarını düzelt */
+E.forEach(r=>{ if(r[1]==="aclûni") r[1]="acluni"; });
+
+const ENT = E.map((r,i)=>({i, t:r[0], a:r[1], k:r[2], of:(r[3]||{}).of, alt:(r[3]||{}).alt||[], n:(r[3]||{}).n||"",
+  key:r[0].replace(/\s*\(.*?\)\s*/g,"").trim()}));
+ENT.forEach(e=>{ if(!A[e.a]) console.error("müellif yok:",e.a,e.t); });
+const byKey = {}; ENT.forEach(e=>{ (byKey[e.key] ||= new Set()).add(e.a); });
+
+/* ---------- yardımcılar ---------- */
+const $ = s=>document.querySelector(s);
+const esc = s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const rnd = n=>Math.floor(Math.random()*n);
+const pick = arr=>arr[rnd(arr.length)];
+const shuffle = arr=>{ const a=arr.slice(); for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]];} return a; };
+const aName = id=>A[id][0], aDate = id=>A[id][1];
+const store = { get(k,d){ try{ const v=localStorage.getItem(k); return v===null?d:JSON.parse(v);}catch(e){return d;} },
+                set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} } };
+
+let selected = new Set(store.get("hadis.cats", Object.keys(CATS)));
+let view = store.get("hadis.view","tf");
+const score = {ok:0, all:0, streak:0, best:store.get("hadis.best",0)};
+
+function pool(){ return ENT.filter(e=>selected.has(e.k)); }
+
+function kunye(e){
+  return `<div class="kunye-box">
+    <div class="t">${esc(e.t)}</div>
+    <div class="m">${esc(aName(e.a))} <span class="date">ö. h. ${aDate(e.a)}</span></div>
+    <div class="x"><span class="tag">${esc(CATS[e.k].s)}</span>${e.of?` · Konusu: ${esc(e.of)}`:""}</div>
+    ${e.n?`<div class="x">${esc(e.n)}</div>`:""}
+  </div>`;
+}
+
+/* ---------- başlık, süzgeç, sekmeler ---------- */
+function renderStats(){
+  const ds = Object.values(A).map(x=>x[1]);
+  $("#stats").textContent = `${ENT.length} eser · ${Object.keys(A).length} müellif · h. ${Math.min(...ds)}–${Math.max(...ds)}.`;
+}
+function renderChips(){
+  const counts = {}; ENT.forEach(e=>counts[e.k]=(counts[e.k]||0)+1);
+  $("#chips").innerHTML = Object.entries(CATS).map(([k,c])=>
+    `<button class="chip" data-k="${k}" aria-pressed="${selected.has(k)}">${esc(c.s)} <span class="n">${counts[k]||0}</span></button>`).join("");
+  const p = pool();
+  $("#poolNote").textContent = p.length<6 ? "Oyun için en az 6 eser gerekli; birkaç tür daha seçin." : `${p.length} eser havuzda.`;
+}
+$("#chips").addEventListener("click",ev=>{
+  const b = ev.target.closest(".chip"); if(!b) return;
+  const k=b.dataset.k; selected.has(k)?selected.delete(k):selected.add(k);
+  store.set("hadis.cats",[...selected]); renderChips(); render();
+});
+$("#allOn").onclick=()=>{ selected=new Set(Object.keys(CATS)); store.set("hadis.cats",[...selected]); renderChips(); render(); };
+$("#allOff").onclick=()=>{ selected=new Set(); store.set("hadis.cats",[]); renderChips(); render(); };
+$("#tabs").addEventListener("click",ev=>{
+  const b=ev.target.closest(".tab"); if(!b) return; view=b.dataset.v; store.set("hadis.view",view); render(true);
+});
+function renderScore(){
+  if(view==="lib"){ $("#scorebar").hidden=true; return; }
+  $("#scorebar").hidden=false;
+  const pct = score.all?Math.round(100*score.ok/score.all):0;
+  $("#scorebar").innerHTML = `<span>Doğru <b>${score.ok}</b> / ${score.all}</span><span>Başarı <b>%${pct}</b></span><span>Seri <b>${score.streak}</b></span><span>En iyi seri <b>${score.best}</b></span>`;
+}
+function tally(ok){
+  score.all++; if(ok){score.ok++;score.streak++; if(score.streak>score.best){score.best=score.streak; store.set("hadis.best",score.best);} } else score.streak=0;
+  renderScore();
+}
+
+/* ---------- Doğru / Yanlış ---------- */
+let tf = null;
+function makeTF(){
+  const p = pool(); const e = pick(p);
+  const types = ["author","author","date","date","cat"]; if(e.of) types.push("of","of");
+  const type = pick(types); let truth = Math.random()<0.5; let text="";
+  const T = `<em>«${esc(e.t)}»</em>`;
+  if(type==="author"){
+    let who = e.a;
+    if(!truth){
+      const banned = byKey[e.key];
+      let cands = [...new Set(p.filter(x=>x.k===e.k).map(x=>x.a))].filter(a=>!banned.has(a));
+      if(cands.length<2) cands = Object.keys(A).filter(a=>!banned.has(a));
+      // yakın dönemden seçmeyi tercih et
+      const near = cands.filter(a=>Math.abs(aDate(a)-aDate(e.a))<=250);
+      who = pick(near.length?near:cands);
+    }
+    text = `${T} adlı eseri <strong>${esc(aName(who))}</strong> yazmıştır.`;
+  } else if(type==="date"){
+    let d = aDate(e.a);
+    if(!truth){ let nd; do{ nd = d + (Math.random()<.5?-1:1)*(8+rnd(110)); }while(nd<100 || nd===d); d = nd; }
+    text = `${T} müellifi ${esc(aName(e.a))}, <strong>h. ${d}</strong> yılında vefat etmiştir.`;
+  } else if(type==="cat"){
+    let k = e.k;
+    if(!truth){ k = pick(Object.keys(CATS).filter(c=>c!==e.k && !e.alt.includes(c))); }
+    text = `${T}, ${esc(CATS[k].p)} biridir.`;
+  } else {
+    let of = e.of;
+    if(!truth){ const ofs=[...new Set(ENT.filter(x=>x.of && x.of!==e.of).map(x=>x.of))]; of = pick(ofs); }
+    text = `${T}, <strong>${esc(of)}</strong> üzerine yazılmış bir çalışmadır.`;
+  }
+  return {e, text, truth, answered:null};
+}
+let tfRound = {n:0, ok:0, len:15};
+function renderTF(){
+  if(pool().length<6){ $("#view").innerHTML=`<div class="card empty">Soru üretmek için yukarıdan en az 6 eser içeren türler seçin.</div>`; return; }
+  if(!tf) tf = makeTF();
+  const a = tf.answered;
+  const roundDone = tfRound.n>=tfRound.len && a!==null;
+  $("#view").innerHTML = `<div class="card">
+    <div class="qmeta"><span>Soru ${Math.min(tfRound.n+(a===null?1:0),tfRound.len)} / ${tfRound.len}</span><span>Bu turda ${tfRound.ok} doğru</span></div>
+    <p class="qtext">${tf.text}</p>
+    <div class="tf-btns" style="margin-top:14px">
+      <button class="big ${a!==null?(tf.truth?"ok":(a===true?"bad":"")):""}" id="bT" ${a!==null?"disabled":""}>Doğru</button>
+      <button class="big ${a!==null?(!tf.truth?"ok":(a===false?"bad":"")):""}" id="bF" ${a!==null?"disabled":""}>Yanlış</button>
+    </div>
+    ${a!==null?`<div style="margin-top:16px;display:flex;flex-direction:column;gap:12px">
+      <div class="verdict ${a===tf.truth?"ok":"bad"}">${a===tf.truth?"Bildiniz.":"Bilemediniz."} Bu ifade ${tf.truth?"doğru":"yanlış"}.</div>
+      ${kunye(tf.e)}
+      <div class="row">${roundDone
+        ?`<span class="verdict">Tur bitti: ${tfRound.len} soruda ${tfRound.ok} doğru.</span><button class="primary" id="tfNew">Yeni tur</button>`
+        :`<button class="primary" id="tfNext">Sonraki soru</button><span class="note">Kısayollar: D / Y, sonra Enter</span>`}</div>
+    </div>`:`<p class="note" style="margin:12px 0 0">Kısayollar: D = Doğru, Y = Yanlış</p>`}
+  </div>`;
+  if(a===null){ $("#bT").onclick=()=>answerTF(true); $("#bF").onclick=()=>answerTF(false); }
+  else if(roundDone){ $("#tfNew").onclick=()=>{ tfRound={n:0,ok:0,len:15}; tf=null; renderTF(); }; $("#tfNew").focus(); }
+  else { $("#tfNext").onclick=()=>{ tf=null; renderTF(); }; $("#tfNext").focus(); }
+}
+function answerTF(v){ if(tf.answered!==null) return; tf.answered=v; tfRound.n++; const ok=v===tf.truth; if(ok) tfRound.ok++; tally(ok); renderTF(); }
+document.addEventListener("keydown",ev=>{
+  if(view!=="tf" || !tf || ev.target.tagName==="INPUT") return;
+  const k=ev.key.toLowerCase();
+  if(tf.answered===null){ if(k==="d") answerTF(true); if(k==="y") answerTF(false); }
+});
+
+/* ---------- Eşleştirme ---------- */
+let mt = null; let mMode = store.get("hadis.mmode","author");
+const MMODES = {author:"Eser ↔ Müellif", date:"Müellif ↔ Vefat", cat:"Eser ↔ Tür", of:"Eser ↔ Konusu"};
+function rightVal(e){ return mMode==="author"?aName(e.a): mMode==="date"?`h. ${aDate(e.a)}`: mMode==="cat"?CATS[e.k].s: e.of; }
+function leftVal(e){ return mMode==="date"?aName(e.a):e.t; }
+function leftSub(e){ return mMode==="date"?e.t: mMode==="cat"?"":(mMode==="of"?aName(e.a):""); }
+function makeMatch(){
+  let p = shuffle(pool()); if(mMode==="of") p = p.filter(e=>e.of);
+  const chosen=[], usedL=new Set(), usedR=new Set(), usedKey=new Set(), usedA=new Set();
+  for(const e of p){
+    const L=leftVal(e), R=rightVal(e);
+    if(usedL.has(L)||usedR.has(R)||usedKey.has(e.key)) continue;
+    if(mMode!=="date" && mMode!=="author" && false) continue;
+    if(mMode==="date" && usedA.has(e.a)) continue;
+    chosen.push(e); usedL.add(L); usedR.add(R); usedKey.add(e.key); usedA.add(e.a);
+    if(chosen.length===5) break;
+  }
+  return {items:chosen, right:shuffle(chosen.map(e=>e.i)), done:new Set(), selL:null, selR:null, miss:0, wrong:null, t0:Date.now()};
+}
+function renderMatch(){
+  const seg = `<div class="row"><div class="seg" id="mseg">${Object.entries(MMODES).map(([k,v])=>`<button data-m="${k}" aria-pressed="${mMode===k}">${v}</button>`).join("")}</div></div>`;
+  if(pool().length<6){ $("#view").innerHTML=seg+`<div class="card empty">Eşleştirme için yukarıdan daha fazla tür seçin.</div>`; bindSeg(); return; }
+  if(!mt) mt = makeMatch();
+  if(mt.items.length<3){ $("#view").innerHTML=seg+`<div class="card empty">Bu türlerde bu eşleştirme biçimi için yeterli farklı eser yok. Başka bir biçim veya daha çok tür seçin.</div>`; bindSeg(); return; }
+  const byI = Object.fromEntries(mt.items.map(e=>[e.i,e]));
+  const finished = mt.done.size===mt.items.length;
+  const secs = Math.round(((mt.t1||Date.now())-mt.t0)/1000);
+  $("#view").innerHTML = seg + `<div class="card">
+    <div class="qmeta"><span>Soldan birini, sonra sağdan karşılığını seçin</span><span>Hata: ${mt.miss}</span></div>
+    <div class="match" style="margin-top:12px">
+      <div class="col"><h3>${mMode==="date"?"Müellif":"Eser"}</h3>
+        ${mt.items.map(e=>`<button class="tile ${mt.done.has(e.i)?"done":""} ${mt.selL===e.i?"sel":""} ${mt.wrong&&mt.wrong[0]===e.i?"wrong":""}" data-l="${e.i}" ${mt.done.has(e.i)?"disabled":""}>${esc(leftVal(e))}${leftSub(e)?`<span class="s">${esc(leftSub(e))}</span>`:""}</button>`).join("")}
+      </div>
+      <div class="col"><h3>${{author:"Müellif",date:"Vefat",cat:"Tür",of:"Konusu"}[mMode]}</h3>
+        ${mt.right.map(i=>`<button class="tile ${mt.done.has(i)?"done":""} ${mt.selR===i?"sel":""} ${mt.wrong&&mt.wrong[1]===i?"wrong":""}" data-r="${i}" ${mt.done.has(i)?"disabled":""}>${esc(rightVal(byI[i]))}${mt.done.has(i)&&mMode!=="date"&&mMode!=="author"?"":""}</button>`).join("")}
+      </div>
+    </div>
+    ${finished?`<div style="margin-top:16px;display:flex;flex-direction:column;gap:12px">
+      <div class="verdict ok">Tamamlandı: ${secs} saniye, ${mt.miss} hata.</div>
+      <div style="display:flex;flex-direction:column;gap:10px">${mt.items.map(kunye).join("")}</div>
+      <div class="row"><button class="primary" id="mNew">Yeni tur</button></div></div>`
+      :`<div class="row" style="margin-top:14px"><button class="secondary" id="mNew">Karıştır, yeni tur</button></div>`}
+  </div>`;
+  bindSeg();
+  $("#mNew").onclick=()=>{ mt=null; renderMatch(); };
+  $("#view").querySelectorAll("[data-l]").forEach(b=>b.onclick=()=>{ mt.selL=+b.dataset.l; mt.wrong=null; tryMatch(); });
+  $("#view").querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{ mt.selR=+b.dataset.r; mt.wrong=null; tryMatch(); });
+}
+function bindSeg(){ $("#mseg").querySelectorAll("button").forEach(b=>b.onclick=()=>{ mMode=b.dataset.m; store.set("hadis.mmode",mMode); mt=null; renderMatch(); }); }
+function tryMatch(){
+  if(mt.selL!==null && mt.selR!==null){
+    const L = ENT[mt.selL], R = ENT[mt.selR];
+    const ok = mt.selL===mt.selR || rightVal(L)===rightVal(R);
+    if(ok){ mt.done.add(mt.selL); if(mt.selL!==mt.selR){ /* aynı değer: ikisini de kapat */ mt.done.add(mt.selR);} tally(true); }
+    else { mt.miss++; mt.wrong=[mt.selL,mt.selR]; tally(false); }
+    mt.selL=null; mt.selR=null;
+    if(mt.done.size===mt.items.length && !mt.t1) mt.t1=Date.now();
+  }
+  renderMatch();
+}
+
+/* ---------- Kronoloji ---------- */
+let ch = null;
+function makeChrono(){
+  const authors = shuffle([...new Set(pool().map(e=>e.a))]);
+  const chosen=[]; const dates=new Set();
+  for(const a of authors){ const d=aDate(a); if([...dates].some(x=>Math.abs(x-d)<6)) continue; chosen.push(a); dates.add(d); if(chosen.length===5) break; }
+  const work = a=>{ const ws=pool().filter(e=>e.a===a); return pick(ws).t; };
+  return {list:chosen.map(a=>({a, w:work(a)})), order:[], checked:false};
+}
+function renderChrono(){
+  if(!ch) ch = makeChrono();
+  if(ch.list.length<4){ $("#view").innerHTML=`<div class="card empty">Kronoloji için yeterli sayıda farklı müellif yok; daha çok tür seçin.</div>`; return; }
+  const sorted = ch.list.slice().sort((x,y)=>aDate(x.a)-aDate(y.a)).map(x=>x.a);
+  const full = ch.order.length===ch.list.length;
+  let correct = 0; if(ch.checked) ch.order.forEach((a,i)=>{ if(aDate(a)===aDate(sorted[i])) correct++; });
+  const shown = ch.checked ? ch.order.map(a=>ch.list.find(x=>x.a===a)) : ch.list;
+  $("#view").innerHTML = `<div class="card">
+    <div class="qmeta"><span>Müellifleri vefat sırasına göre, en eskiden başlayarak seçin</span><span>${ch.order.length} / ${ch.list.length}</span></div>
+    <div class="chrono" style="margin-top:12px">
+      ${shown.map(x=>{ const pos=ch.order.indexOf(x.a); const okp = ch.checked ? aDate(x.a)===aDate(sorted[pos]) : null;
+        return `<button class="ctile ${pos>=0?"placed":""} ${okp===true?"ok":okp===false?"bad":""}" data-a="${x.a}" ${ch.checked?"disabled":""}>
+          <span class="num">${pos>=0?pos+1:""}</span>
+          <span class="body"><span class="nm">${esc(aName(x.a))}</span><br><span class="w">${esc(x.w)}</span></span>
+          ${ch.checked?`<span class="date">h. ${aDate(x.a)}</span>`:""}
+        </button>`; }).join("")}
+    </div>
+    <div class="row" style="margin-top:14px">
+      ${ch.checked
+        ?`<span class="verdict ${correct===ch.list.length?"ok":"bad"}">${correct} / ${ch.list.length} doğru sırada.</span><button class="primary" id="cNew">Yeni tur</button>`
+        :`<button class="primary" id="cCheck" ${full?"":"disabled"} style="${full?"":"opacity:.5"}">Kontrol et</button><button class="secondary" id="cReset">Sıfırla</button><span class="note">Yanlış seçtiyseniz numaralı karta tekrar dokunun.</span>`}
+    </div>
+    ${ch.checked?`<p class="note" style="margin:12px 0 0">Doğru sıra: ${sorted.map(a=>`${esc(aName(a))} (${aDate(a)})`).join(" → ")}</p>`:""}
+  </div>`;
+  if(ch.checked){ $("#cNew").onclick=()=>{ ch=null; renderChrono(); }; return; }
+  $("#view").querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{
+    const a=b.dataset.a; const pos=ch.order.indexOf(a);
+    if(pos>=0) ch.order=ch.order.slice(0,pos); else ch.order.push(a);
+    renderChrono();
+  });
+  $("#cReset").onclick=()=>{ ch.order=[]; renderChrono(); };
+  $("#cCheck").onclick=()=>{ if(!full) return; ch.checked=true;
+    ch.order.forEach((a,i)=>tally(aDate(a)===aDate(sorted[i]))); renderChrono(); };
+}
+
+/* ---------- Kütüphane ---------- */
+let q = "";
+const norm = s=>s.toLocaleLowerCase("tr").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[ʿʾ'’`]/g,"");
+function renderLib(keepFocus){
+  const nq = norm(q);
+  const list = pool().filter(e=>!nq || norm(`${e.t} ${aName(e.a)} ${e.of||""} ${e.n} ${CATS[e.k].s}`).includes(nq))
+    .sort((x,y)=>aDate(x.a)-aDate(y.a) || x.t.localeCompare(y.t,"tr"));
+  const groups = {}; list.forEach(e=>{ const c=Math.ceil(aDate(e.a)/100); (groups[c] ||= []).push(e); });
+  const html = Object.keys(groups).sort((a,b)=>a-b).map(c=>`<section class="century">
+      <h3>Hicrî ${c}. asır <span>${groups[c].length} eser</span></h3>
+      ${groups[c].map(e=>`<div class="entry"><div class="date">h. ${aDate(e.a)}</div><div class="body">
+        <div class="t">${esc(e.t)}</div>
+        <div class="x"><strong style="color:var(--ink)">${esc(aName(e.a))}</strong> · <span class="tag">${esc(CATS[e.k].s)}</span>${e.of?` · Konusu: ${esc(e.of)}`:""}</div>
+        ${e.n?`<div class="x">${esc(e.n)}</div>`:""}</div></div>`).join("")}
+    </section>`).join("");
+  if(!keepFocus){
+    $("#view").innerHTML = `<input class="search" id="libq" type="search" placeholder="Eser, müellif veya konu ara (ör. Buhârî, şerh, garîb)" value="${esc(q)}" aria-label="Kütüphanede ara"><div id="libout"></div>`;
+    $("#libq").addEventListener("input",ev=>{ q=ev.target.value; renderLib(true); });
+  }
+  $("#libout").innerHTML = html || `<div class="empty">Aramanızla eşleşen eser yok. Seçili türleri ya da arama kelimesini değiştirin.</div>`;
+}
+
+/* ---------- genel ---------- */
+function render(tabChange){
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected", t.dataset.v===view));
+  renderScore();
+  if(!tabChange){ tf=null; mt=null; ch=null; }
+  if(view==="tf") renderTF(); else if(view==="match") renderMatch(); else if(view==="chrono") renderChrono(); else renderLib();
+}
+renderStats(); renderChips(); render();
+</script>
+
+</body>
+</html>
