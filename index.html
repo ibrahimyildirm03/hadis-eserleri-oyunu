@@ -3,129 +3,159 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Hadis kaynakları, şerhler, usûl, ricâl ve diğer türlerden eserlerle Doğru/Yanlış, test, eşleştirme ve kronoloji oyunu.">
-<title>Hadis Eserleri Oyunu</title>
+<meta name="theme-color" content="#1E2B4D">
+<meta name="description" content="Hadis eserleri, müellifleri ve âlimlerin vefat yılları üzerine öğrenme oyunları.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Hadis Oyunları">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hadis Oyunları</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231E2B4D'/%3E%3Cg fill='%23E2B45F'%3E%3Crect x='27.5' y='8.5' width='9' height='9'/%3E%3Crect x='27.5' y='8.5' width='9' height='9' transform='rotate(45 32 13)'/%3E%3C/g%3E%3Cpath d='M32 28c-5-3.5-11-4.5-17-4v22c6-.5 12 .5 17 4 5-3.5 11-4.5 17-4V24c-6-.5-12 .5-17 4z' fill='%23F6EFE3'/%3E%3Cpath d='M32 28v22' stroke='%231E2B4D' stroke-width='2'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap">
 <style>
 body{margin:0} [hidden]{display:none!important} img{max-width:100%}
-/* Layout: tek sütun; üstte lacivert/kahve künye bandı, altında hap şeklinde sekmeler ve yumuşak gölgeli kartlar.
-   Gündüz: krem zemin, kahve vurgu, lacivert ikincil. Gece: lacivert zemin, krem yazı, sütlü kahve vurgu. */
+/* Layout: uygulama gibi tek sütun — üstte logo çubuğu, ana sayfada iki oyun kartı, oyun içinde hap sekmeler + kartlar.
+   Gündüz: krem zemin, kahve vurgu, lacivert ikincil. Gece: lacivert zemin, krem yazı, altın vurgu (kahve yok). */
 :root{
   --paper:#F6EFE3; --surface:#FFFBF5; --surface-2:#F0E6D6; --ink:#2A1D15; --muted:#7B6757; --line:#E6D9C6;
   --accent:#7A4A2A; --accent-ink:#FFF8EE; --accent-soft:#F1E1CD; --navy:#1E2B4D; --gold:#9C6B3C; --sel:#EEDDC7;
-  --hero-bg:#1E2B4D; --hero-ink:#F6EFE3; --hero-muted:#C9BFAE; --hero-accent:#D9A877;
+  --hero-a:#1E2B4D; --hero-b:#2D4170; --hero-ink:#F6EFE3; --hero-muted:#CBD1E0; --hero-accent:#E2B45F;
   --ok:#2F6B45; --ok-bg:#E3EEDD; --bad:#A23A2E; --bad-bg:#F7E0DA;
   --shadow:0 1px 2px rgba(42,29,21,.06), 0 8px 24px rgba(42,29,21,.07);
   --display:"Fraunces", "Iowan Old Style", Georgia, serif;
   --body:"Manrope", "Segoe UI", system-ui, sans-serif;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --paper:#0D1530; --surface:#152042; --surface-2:#1B2850; --ink:#F3EADB; --muted:#A8B0C8; --line:#26345E;
-  --accent:#C99A6B; --accent-ink:#1B120A; --accent-soft:#2A2A45; --navy:#9FB2E0; --gold:#E2C29A; --sel:#25345F;
-  --hero-bg:#3A2619; --hero-ink:#F6EFE3; --hero-muted:#D4BFA8; --hero-accent:#E6B98A;
-  --ok:#86D3A4; --ok-bg:#163A35; --bad:#F2A091; --bad-bg:#3F1F2B;
+  --paper:#0B1330; --surface:#131D3F; --surface-2:#1A264E; --ink:#F2ECE0; --muted:#A5AECB; --line:#26335F;
+  --accent:#E2B45F; --accent-ink:#141A33; --accent-soft:#2A3561; --navy:#A9BCF0; --gold:#E9C784; --sel:#2B3A70;
+  --hero-a:#1B2A5C; --hero-b:#2C4385; --hero-ink:#F2ECE0; --hero-muted:#C3CCE8; --hero-accent:#F0C56E;
+  --ok:#86D3A4; --ok-bg:#15383A; --bad:#F2A091; --bad-bg:#3E1F33;
   --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.28); color-scheme:dark; } }
 :root[data-theme="dark"]{
-  --paper:#0D1530; --surface:#152042; --surface-2:#1B2850; --ink:#F3EADB; --muted:#A8B0C8; --line:#26345E;
-  --accent:#C99A6B; --accent-ink:#1B120A; --accent-soft:#2A2A45; --navy:#9FB2E0; --gold:#E2C29A; --sel:#25345F;
-  --hero-bg:#3A2619; --hero-ink:#F6EFE3; --hero-muted:#D4BFA8; --hero-accent:#E6B98A;
-  --ok:#86D3A4; --ok-bg:#163A35; --bad:#F2A091; --bad-bg:#3F1F2B;
+  --paper:#0B1330; --surface:#131D3F; --surface-2:#1A264E; --ink:#F2ECE0; --muted:#A5AECB; --line:#26335F;
+  --accent:#E2B45F; --accent-ink:#141A33; --accent-soft:#2A3561; --navy:#A9BCF0; --gold:#E9C784; --sel:#2B3A70;
+  --hero-a:#1B2A5C; --hero-b:#2C4385; --hero-ink:#F2ECE0; --hero-muted:#C3CCE8; --hero-accent:#F0C56E;
+  --ok:#86D3A4; --ok-bg:#15383A; --bad:#F2A091; --bad-bg:#3E1F33;
   --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.28); color-scheme:dark; }
 
 *{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
 body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16.5px;line-height:1.55;
-  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:20px 56px;
-  transition:background-color .25s, color .25s}
-.wrap{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:12px 56px;
+  transition:background-color .25s, color .25s;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
 h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.12;font-weight:600}
-button{font:inherit;color:inherit;cursor:pointer}
+button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
 button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-/* Künye bandı */
-header{background:var(--hero-bg);color:var(--hero-ink);border-radius:24px;padding:28px 28px 26px;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
-header::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;
-  border:28px solid var(--hero-accent);opacity:.16;pointer-events:none}
-.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--hero-accent);font-weight:700}
-h1{font-size:clamp(36px,6.4vw,56px);letter-spacing:-.01em}
-.sub{color:var(--hero-muted);margin:0;max-width:64ch;font-size:16px}
-.stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
-.stat{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:4px 12px;font-size:14px;font-variant-numeric:tabular-nums;color:var(--hero-ink)}
-.stat b{color:var(--hero-accent)}
-.themebtn{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:var(--hero-ink);border-radius:999px;padding:7px 14px;font-size:14px;font-weight:700;position:relative;z-index:1}
-.themebtn:hover{background:rgba(255,255,255,.18)}
-.themebtn .dot{width:14px;height:14px;border-radius:50%;background:var(--hero-accent);box-shadow:inset -4px -2px 0 rgba(0,0,0,.25)}
+/* Uygulama çubuğu */
+.appbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0}
+.brand{display:flex;align-items:center;gap:12px;background:none;border:0;padding:0;text-align:left}
+.brand svg{width:44px;height:44px;flex:0 0 44px;border-radius:12px;box-shadow:var(--shadow)}
+.brand .nm{font-family:var(--display);font-size:24px;font-weight:600;line-height:1}
+.brand .tg{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.04em}
+.themebtn{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:700;box-shadow:var(--shadow)}
+.themebtn .dot{width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:inset -4px -2px 0 rgba(0,0,0,.25)}
 
-/* Süzgeç */
-details.filter{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:4px 20px;box-shadow:var(--shadow)}
-details.filter summary{cursor:pointer;padding:14px 0;font-weight:800;font-size:16px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;list-style:none}
+/* Ana sayfa */
+.hero{background:linear-gradient(135deg,var(--hero-a),var(--hero-b));color:var(--hero-ink);border-radius:26px;padding:30px 28px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.hero::after{content:"";position:absolute;right:-70px;top:-70px;width:240px;height:240px;border-radius:50%;border:30px solid var(--hero-accent);opacity:.14;pointer-events:none}
+.eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--hero-accent);font-weight:800}
+.hero h1{font-size:clamp(36px,7vw,58px);margin:8px 0 10px;letter-spacing:-.01em}
+.hero p{margin:0;color:var(--hero-muted);max-width:56ch}
+.games{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.gcard{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:22px;text-align:left;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow);transition:transform .15s,border-color .15s}
+.gcard:hover{transform:translateY(-2px);border-color:var(--accent)}
+.gcard .ic{width:48px;height:48px;border-radius:14px;background:var(--accent-soft);display:grid;place-items:center;color:var(--accent)}
+.gcard h2{font-size:26px}
+.gcard p{margin:0;color:var(--muted);font-size:15px}
+.gcard .meta{display:flex;flex-wrap:wrap;gap:6px}
+.gcard .go{margin-top:auto;font-weight:800;color:var(--accent)}
+.pill{font-size:12px;font-weight:700;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--muted);background:var(--surface-2)}
+.install{background:var(--surface);border:1px dashed var(--line);border-radius:20px;padding:16px 18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+.install p{margin:0;color:var(--muted);font-size:14.5px;max-width:52ch}
+
+/* Oyun ekranı */
+.ghead{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.back{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-weight:700;font-size:14px}
+.ghead h2{font-size:clamp(26px,5vw,34px)}
+.modes{display:flex;gap:4px;background:var(--surface-2);border-radius:999px;padding:5px;overflow-x:auto;scrollbar-width:none}
+.modes::-webkit-scrollbar{display:none}
+.mode{flex:1 0 auto;background:none;border:0;padding:10px 16px;font-size:14.5px;font-weight:700;color:var(--muted);border-radius:999px;white-space:nowrap;min-height:42px}
+.mode:hover{color:var(--ink)}
+.mode[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+
+details.filter{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:2px 18px;box-shadow:var(--shadow)}
+details.filter summary{cursor:pointer;padding:13px 0;font-weight:800;font-size:15.5px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;list-style:none}
 details.filter summary::-webkit-details-marker{display:none}
-details.filter summary .n{font-size:14px;font-weight:600;color:var(--muted)}
-details.filter summary::before{content:"";width:8px;height:8px;border-right:2px solid var(--accent);border-bottom:2px solid var(--accent);transform:rotate(-45deg);margin:7px 10px 0 2px;transition:transform .2s}
-details.filter summary > span:first-of-type{margin-right:auto}
-details.filter[open] summary::before{transform:rotate(45deg);margin-top:4px}
-.fbody{display:flex;flex-direction:column;gap:16px;padding-bottom:18px}
+details.filter summary::before{content:"";width:8px;height:8px;border-right:2px solid var(--accent);border-bottom:2px solid var(--accent);transform:rotate(-45deg);transition:transform .2s}
+details.filter[open] summary::before{transform:rotate(45deg)}
+details.filter summary .n{margin-left:auto;font-size:13.5px;font-weight:600;color:var(--muted)}
+.fbody{display:flex;flex-direction:column;gap:14px;padding-bottom:16px}
 .grp{display:flex;flex-direction:column;gap:8px}
-.grp-h button{background:none;border:0;padding:0;font-weight:800;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--navy)}
-.linkbtn{background:var(--accent-soft);border:0;color:var(--accent);font-weight:700;padding:6px 12px;border-radius:999px;font-size:14px}
+.grp-h{background:none;border:0;padding:0;text-align:left;font-weight:800;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--navy)}
+.linkbtn{background:var(--accent-soft);border:0;color:var(--accent);font-weight:700;padding:7px 13px;border-radius:999px;font-size:14px}
 .chips{display:flex;flex-wrap:wrap;gap:7px}
-.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:14px;font-weight:600;display:inline-flex;gap:6px;align-items:center;transition:background-color .15s,border-color .15s}
-.chip:hover{border-color:var(--accent)}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600;display:inline-flex;gap:6px;align-items:center}
 .chip .n{color:var(--muted);font-variant-numeric:tabular-nums;font-size:12px;font-weight:700}
 .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .chip[aria-pressed="true"] .n{color:inherit;opacity:.75}
 
-/* Sekmeler: hap şeklinde */
-.tabs{display:flex;gap:4px;background:var(--surface-2);border-radius:999px;padding:5px;overflow-x:auto;scrollbar-width:none}
-.tab{flex:1 0 auto;background:none;border:0;padding:9px 16px;font-size:15px;font-weight:700;color:var(--muted);border-radius:999px;white-space:nowrap;transition:background-color .15s,color .15s}
-.tab:hover{color:var(--ink)}
-.tab[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
-
 .scorebar{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.scorebar span{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 14px;font-size:13px;color:var(--muted);font-weight:600;display:flex;flex-direction:column;gap:2px}
-.scorebar b{color:var(--ink);font-size:22px;font-variant-numeric:tabular-nums;font-weight:800;line-height:1.1}
-@media (max-width:560px){ .scorebar{grid-template-columns:repeat(2,1fr)} }
+.scorebar span{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:9px 13px;font-size:12.5px;color:var(--muted);font-weight:700;display:flex;flex-direction:column;gap:1px}
+.scorebar b{color:var(--ink);font-size:21px;font-variant-numeric:tabular-nums;font-weight:800;line-height:1.15}
 
-.panel{display:flex;flex-direction:column;gap:16px}
+.panel{display:flex;flex-direction:column;gap:14px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:var(--shadow)}
+.card.flash-ok{box-shadow:0 0 0 3px var(--ok)} .card.flash-bad{box-shadow:0 0 0 3px var(--bad)}
 .qmeta{display:flex;justify-content:space-between;align-items:center;gap:10px;color:var(--muted);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;flex-wrap:wrap}
 .qkind{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:4px 10px}
-.qtext{font-family:var(--display);font-weight:500;font-size:clamp(21px,3.4vw,28px);line-height:1.35;margin:14px 0 4px}
+.qtext{font-family:var(--display);font-weight:500;font-size:clamp(20px,3.4vw,27px);line-height:1.35;margin:14px 0 4px}
 .qtext em{font-style:italic;color:var(--accent)}
 .qtext strong{color:var(--navy);font-weight:600}
-.tf-btns{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.big{border:1.5px solid var(--line);background:var(--surface-2);border-radius:16px;padding:15px;font-size:18px;font-weight:800;transition:transform .12s,border-color .15s,background-color .15s}
-.opt{border:1.5px solid var(--line);background:var(--surface-2);border-radius:16px;padding:13px 15px;font-size:16px;font-weight:600;text-align:left;line-height:1.3;overflow-wrap:anywhere;transition:transform .12s,border-color .15s}
-.opt .s{display:block;font-size:13px;font-weight:500;color:var(--muted);margin-top:3px}
+.qtext q{font-style:italic;quotes:"“" "”"}
+.tf-btns{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.big{border:1.5px solid var(--line);background:var(--surface-2);border-radius:16px;padding:15px;font-size:17px;font-weight:800;min-height:58px;transition:transform .12s,border-color .15s}
+.opt{border:1.5px solid var(--line);background:var(--surface-2);border-radius:16px;padding:13px 15px;font-size:16px;font-weight:600;text-align:left;line-height:1.3;overflow-wrap:anywhere;min-height:54px;transition:transform .12s,border-color .15s}
+.opt .s,.big .s{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-top:3px}
 .big:hover:not(:disabled),.opt:hover:not(:disabled){border-color:var(--accent);transform:translateY(-1px)}
 .big:disabled,.opt:disabled{cursor:default;opacity:.5}
 .ok-c{background:var(--ok-bg)!important;border-color:var(--ok)!important;color:var(--ok)!important;opacity:1!important}
 .bad-c{background:var(--bad-bg)!important;border-color:var(--bad)!important;color:var(--bad)!important;opacity:1!important}
-.primary{background:var(--accent);color:var(--accent-ink);border:0;border-radius:999px;padding:11px 22px;font-weight:800;font-size:15px;transition:filter .15s}
-.primary:hover{filter:brightness(1.08)}
-.secondary{background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:10px 18px;font-weight:700;font-size:14px}
+.ok-c .s,.bad-c .s{color:inherit!important;opacity:.85}
+.primary{background:var(--accent);color:var(--accent-ink);border:0;border-radius:999px;padding:12px 22px;font-weight:800;font-size:15px;min-height:46px}
+.primary:hover{filter:brightness(1.07)}
+.primary:disabled{opacity:.45;cursor:default;filter:none}
+.secondary{background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:10px 18px;font-weight:700;font-size:14px;min-height:44px}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.after{margin-top:18px;display:flex;flex-direction:column;gap:12px}
 .verdict{font-weight:800;font-size:17px}
 .verdict.ok{color:var(--ok)} .verdict.bad{color:var(--bad)}
+.infos{display:flex;flex-direction:column;gap:10px}
 
 .kunye-box{background:var(--surface-2);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
-.kunye-box .t{font-family:var(--display);font-size:20px;font-weight:600}
+.kunye-box .t{font-family:var(--display);font-size:19px;font-weight:600}
 .kunye-box .x{color:var(--muted);font-size:14.5px}
+.kunye-box .info{color:var(--ink);font-size:14.5px;border-left:3px solid var(--accent);padding-left:10px;margin-top:4px}
+.mini{display:flex;flex-direction:column;gap:6px}
+.mini div{font-size:14px;color:var(--muted);background:var(--surface-2);border-radius:12px;padding:8px 12px}
+.mini b{color:var(--ink)}
 .date{font-variant-numeric:tabular-nums;color:var(--gold);font-weight:800;white-space:nowrap}
 .tag{display:inline-block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:800;color:var(--navy);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:2px 9px}
 
 .seg{display:inline-flex;background:var(--surface-2);border-radius:999px;padding:4px;flex-wrap:wrap;gap:2px}
-.seg button{background:none;border:0;padding:7px 14px;font-weight:700;font-size:14px;color:var(--muted);border-radius:999px}
+.seg button{background:none;border:0;padding:8px 14px;font-weight:700;font-size:14px;color:var(--muted);border-radius:999px}
 .seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
-.match{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.match{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
 .col{display:flex;flex-direction:column;gap:8px;min-width:0}
 .col h3{font-family:var(--body);font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--navy)}
-.tile{text-align:left;background:var(--surface-2);border:1.5px solid var(--line);border-radius:14px;padding:11px 13px;font-size:15.5px;font-weight:600;line-height:1.3;min-height:54px;overflow-wrap:anywhere;transition:border-color .15s,background-color .15s}
-.tile:hover:not(:disabled){border-color:var(--accent)}
+.tile{text-align:left;background:var(--surface-2);border:1.5px solid var(--line);border-radius:14px;padding:11px 13px;font-size:15.5px;font-weight:600;line-height:1.3;min-height:56px;overflow-wrap:anywhere}
 .tile.sel{border-color:var(--accent);background:var(--sel)}
 .tile.done{border-color:var(--ok);background:var(--ok-bg);color:var(--ok);cursor:default}
 .tile.wrong{border-color:var(--bad);background:var(--bad-bg);animation:shake .35s}
@@ -133,20 +163,36 @@ details.filter[open] summary::before{transform:rotate(45deg);margin-top:4px}
 .tile.done .s{color:inherit;opacity:.8}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 
-.chrono{display:flex;flex-direction:column;gap:8px}
-.ctile{display:flex;align-items:center;gap:12px;text-align:left;background:var(--surface-2);border:1.5px solid var(--line);border-radius:14px;padding:11px 13px;transition:border-color .15s}
-.ctile:hover:not(:disabled){border-color:var(--accent)}
-.ctile .num{flex:0 0 34px;height:34px;border-radius:50%;border:1.5px dashed var(--muted);display:grid;place-items:center;font-weight:800;font-variant-numeric:tabular-nums}
-.ctile.placed .num{background:var(--accent);border:0;color:var(--accent-ink)}
-.ctile .body{min-width:0;flex:1}
-.ctile .nm{font-weight:800}
-.ctile .w{font-size:13.5px;color:var(--muted)}
-.ctile.ok{border-color:var(--ok);background:var(--ok-bg)}
-.ctile.bad{border-color:var(--bad);background:var(--bad-bg)}
+/* Oklarla sıralama */
+.sortlist{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.srow{display:flex;align-items:center;gap:12px;background:var(--surface-2);border:1.5px solid var(--line);border-radius:16px;padding:10px 10px 10px 12px}
+.srow .num{flex:0 0 32px;height:32px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:800;font-variant-numeric:tabular-nums}
+.srow .body{flex:1;min-width:0}
+.srow .nm{font-weight:800;overflow-wrap:anywhere}
+.srow .w{font-size:13.5px;color:var(--muted);overflow-wrap:anywhere}
+.srow .info{font-size:13.5px;color:var(--ink);margin-top:4px}
+.arrows{display:flex;flex-direction:column;gap:4px}
+.arr{width:44px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center}
+.arr:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.arr:disabled{opacity:.3;cursor:default}
+.arr svg{width:18px;height:18px}
+.srow.ok{border-color:var(--ok);background:var(--ok-bg)} .srow.bad{border-color:var(--bad);background:var(--bad-bg)}
+.srow.ok .num{background:var(--ok);color:var(--surface)} .srow.bad .num{background:var(--bad);color:var(--surface)}
+
+/* Zamana karşı */
+.timer{height:10px;border-radius:999px;background:var(--surface-2);overflow:hidden;margin-top:12px}
+.timer i{display:block;height:100%;background:var(--accent);border-radius:999px;transition:width .25s linear}
+.bigstat{font-family:var(--display);font-size:56px;font-weight:600;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
+
+/* Kartlar */
+.flashcard{min-height:220px;display:flex;flex-direction:column;justify-content:center;gap:10px;text-align:center;align-items:center}
+.flashcard .t{font-family:var(--display);font-size:clamp(24px,5vw,34px);font-weight:600}
+.flashcard .x{color:var(--muted)}
 
 .search{width:100%;padding:13px 18px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);font:inherit;box-shadow:var(--shadow)}
 .search::placeholder{color:var(--muted)}
-.libgrp{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--navy);font-weight:800;padding-top:22px}
+.yearin{max-width:190px;box-shadow:none;font-size:18px;font-weight:700}
+.libgrp{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--navy);font-weight:800;padding-top:18px}
 .section{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:6px 20px 8px;box-shadow:var(--shadow)}
 .section h3{font-size:22px;padding:14px 0 4px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
 .section h3 span{font-family:var(--body);font-size:13px;color:var(--accent);font-weight:800;background:var(--accent-soft);border-radius:999px;padding:3px 10px;white-space:nowrap}
@@ -157,12 +203,15 @@ details.filter[open] summary::before{transform:rotate(45deg);margin-top:4px}
 .entry .x{color:var(--muted);font-size:14.5px}
 .entry .x strong{color:var(--ink)}
 .empty{color:var(--muted);padding:20px 0}
-.note{color:var(--muted);font-size:13.5px}
-@media (max-width:560px){
-  header{padding:22px 20px;border-radius:20px}
-  .match{gap:8px} .tile{font-size:14.5px;padding:9px} .card{padding:18px;border-radius:18px}
-  .entry{grid-template-columns:56px 1fr} .opts{grid-template-columns:1fr}
-  .section{padding:4px 14px 6px}
+.note{color:var(--muted);font-size:13.5px;margin:0}
+@media (max-width:620px){
+  .games{grid-template-columns:1fr}
+  .scorebar{grid-template-columns:repeat(4,1fr);gap:6px} .scorebar span{padding:7px 9px;font-size:11px} .scorebar b{font-size:17px}
+  .hero{padding:24px 20px;border-radius:22px}
+  .card{padding:18px;border-radius:18px} .opts{grid-template-columns:1fr}
+  .match{gap:8px} .tile{font-size:14.5px;padding:9px}
+  .entry{grid-template-columns:56px 1fr} .section{padding:4px 14px 6px}
+  .brand .nm{font-size:21px} .brand svg{width:40px;height:40px;flex-basis:40px}
 }
 @media (prefers-reduced-motion: reduce){ *{transition:none!important} .tile.wrong{animation:none} }
 </style>
@@ -170,36 +219,18 @@ details.filter[open] summary::before{transform:rotate(45deg);margin-top:4px}
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <div class="top"><div class="eyebrow">Sahîfe-i Hemmâm'dan Menhecü'n-nakd'e</div>
-      <button class="themebtn" id="themeBtn" type="button"><span class="dot"></span><span id="themeLbl">Gece</span></button></div>
-    <h1>Hadis Eserleri</h1>
-    <p class="sub">Rivayet kaynakları, derlemeler, şerhler, usûl, tenkit, ricâl ve tahrîc eserleri. Her eser tek bir türde yer alır. Tarihler müelliflerin hicrî vefat yıllarıdır.</p>
-    <div class="stats" id="stats"></div>
-  </header>
-
-  <details class="filter" id="filterBox">
-    <summary><span>Türler ve dönemler</span><span class="n" id="poolNote"></span></summary>
-    <div class="fbody">
-      <div class="row"><button class="linkbtn" id="allOn">Hepsini seç</button><button class="linkbtn" id="allOff">Türleri temizle</button></div>
-      <div id="groups" class="fbody" style="padding:0"></div>
-      <div class="grp"><div class="grp-h"><button disabled style="cursor:default">Dönem (hicrî asır)</button></div><div class="chips" id="eras"></div></div>
-    </div>
-  </details>
-
-  <nav class="tabs" role="tablist" id="tabs">
-    <button class="tab" role="tab" data-v="tf">Doğru / Yanlış</button>
-    <button class="tab" role="tab" data-v="mc">Test</button>
-    <button class="tab" role="tab" data-v="match">Eşleştirme</button>
-    <button class="tab" role="tab" data-v="chrono">Kronoloji</button>
-    <button class="tab" role="tab" data-v="lib">Kütüphane</button>
-  </nav>
-
-  <div class="scorebar" id="scorebar"></div>
-  <main id="view" class="panel"></main>
+  <div class="appbar">
+    <button class="brand" id="brand" type="button" aria-label="Hadis Oyunları ana sayfa">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#1E2B4D"/><g fill="#E2B45F"><rect x="27.5" y="8.5" width="9" height="9"/><rect x="27.5" y="8.5" width="9" height="9" transform="rotate(45 32 13)"/></g><path d="M32 28c-5-3.5-11-4.5-17-4v22c6-.5 12 .5 17 4 5-3.5 11-4.5 17-4V24c-6-.5-12 .5-17 4z" fill="#F6EFE3"/><path d="M32 28v22" stroke="#1E2B4D" stroke-width="2"/></svg>
+      <span><span class="nm">Hadis Oyunları</span><br><span class="tg">Eserler · Âlimler · Vefat yılları</span></span>
+    </button>
+    <button class="themebtn" id="themeBtn" type="button"><span class="dot"></span><span id="themeLbl">Gece</span></button>
+  </div>
+  <main id="app" class="panel"></main>
 </div>
 
 <script>
+
 /* ---------- Müellifler: [ad, hicrî vefat] ---------- */
 const A = {
  hemmam:["Hemmâm b. Münebbih",131], ibnishak:["İbn İshak",151], mamer:["Ma'mer b. Râşid",153],
@@ -576,6 +607,7 @@ const ERAS = [
 ];
 const eraOf = v=>ERAS.find(x=>v>=x.min && v<=x.max).id;
 
+
 /* ---------- yardımcılar ---------- */
 const $ = s=>document.querySelector(s);
 const esc = s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -586,376 +618,655 @@ const aName = id=>A[id][0], aDate = id=>A[id][1];
 const century = v=>Math.ceil(v/100);
 const store = { get(k,d){ try{ const v=localStorage.getItem(k); return v===null?d:JSON.parse(v);}catch(e){return d;} },
                 set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} } };
+const UP = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>`;
+const DOWN = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>`;
 
+/* ---------- Vefat listesi: [ad, hicrî vefat, kısa bilgi] ---------- */
+const V = [
+ ["Ömer b. Abdülaziz",101,"Emevî halifesi; hadislerin resmî olarak toplanmasını emretti."],
+ ["Katâde b. Diâme",117,"Basralı tâbiî; güçlü hafızasıyla bilinen müfessir ve muhaddis."],
+ ["Nâfi' Mevlâ İbn Ömer",117,"İbn Ömer'in azatlısı; Mâlik–Nâfi'–İbn Ömer \"altın silsile\"sinin ravisi."],
+ ["İbn Şihâb ez-Zührî",124,"Hadislerin ilk resmî tedvinini gerçekleştiren tâbiî âlim."],
+ ["A'meş",148,"Kûfeli muhaddis ve kıraat âlimi."],
+ ["Ebû Hanîfe",150,"Hanefî mezhebinin imamı."],
+ ["İbn Cüreyc",150,"Mekke'de hadisleri ilk tasnif edenlerden."],
+ ["Ma'mer b. Râşid",153,"Yemen'e yerleşen muhaddis; el-Câmi' sahibi, Abdürrezzâk'ın hocası."],
+ ["İmam Evzâî",157,"Şam bölgesinin imamı; adıyla anılan bir mezhebi vardı."],
+ ["Şu'be b. Haccâc",160,"\"Hadiste mü'minlerin emîri\"; ravi tenkidini sistemli yapan ilk âlimlerden."],
+ ["Süfyân es-Sevrî",161,"Kûfeli fakih ve muhaddis; zühdü ve hıfzıyla meşhur."],
+ ["Hammâd b. Seleme",167,"Basralı muhaddis ve fakih."],
+ ["Leys b. Sa'd",175,"Mısır'ın büyük fakih ve muhaddisi."],
+ ["İmam Mâlik",179,"Mâlikî mezhebinin imamı; el-Muvatta' sahibi."],
+ ["Hammâd b. Zeyd",179,"Basralı hâfız; sika ve sağlam bir muhaddis."],
+ ["Abdullah b. Mübârek",181,"Zâhid muhaddis ve mücahit; ez-Zühd ve'r-rekāik sahibi."],
+ ["İmam Ebû Yûsuf",182,"Ebû Hanîfe'nin talebesi; ilk kādı'l-kudât; Kitâbü'l-Harâc sahibi."],
+ ["İmam Muhammed",189,"Ebû Hanîfe'nin talebesi; Hanefî fıkhını yazıya geçirdi, Muvatta' rivayeti vardır."],
+ ["Vekî' b. el-Cerrâh",197,"Kûfeli hâfız; İmam Şâfiî ve Ahmed b. Hanbel'in hocası."],
+ ["Süfyân b. Uyeyne",198,"Mekke muhaddisi; İmam Şâfiî'nin hocası."],
+ ["Yahyâ b. Saîd el-Kattân",198,"Basralı hâfız; cerh-ta'dîlin öncülerinden."],
+ ["Abdurrahman b. el-Mehdî",198,"Basralı hâfız; ravi tenkidinde Kattân'ın akranı."],
+ ["Ebû Dâvûd et-Tayâlisî",204,"Günümüze ulaşan en eski müsnedlerden birinin sahibi."],
+ ["İmam Şâfiî",204,"Şâfiî mezhebinin imamı; er-Risâle sahibi."],
+ ["Abdürrezzâk b. Hemmâm",211,"San'âlı muhaddis; el-Musannef sahibi."],
+ ["Humeydî (Abdullah b. Zübeyr)",219,"Buhârî'nin hocası; el-Müsned sahibi."],
+ ["Ebû Ubeyd Kāsım b. Sellâm",224,"Garîbü'l-hadîs ve Kitâbü'l-Emvâl sahibi."],
+ ["Saîd b. Mansûr",227,"Erken dönem es-Sünen'in sahibi."],
+ ["İbn Sa'd",230,"Vâkıdî'nin kâtibi; et-Tabakātü'l-kübrâ sahibi."],
+ ["Yahyâ b. Maîn",233,"Cerh-ta'dîlin imamı."],
+ ["Ali b. el-Medînî",234,"Buhârî'nin en önemli hocası; ilel imamı."],
+ ["İbn Ebî Şeybe",235,"el-Musannef sahibi."],
+ ["İbn Râhûye",238,"Nîsâbûr'un imamı; Buhârî ve Müslim'in hocası."],
+ ["Ahmed b. Hanbel",241,"Hanbelî mezhebinin imamı; el-Müsned sahibi."],
+ ["Dârimî",255,"Semerkantlı muhaddis; es-Sünen sahibi."],
+ ["İmam Buhârî",256,"el-Câmiu's-sahîh sahibi."],
+ ["İmam Müslim",261,"Sahîh-i Müslim sahibi."],
+ ["Ebû Zür'a er-Râzî",264,"Rey'li hâfız; ilel ve ricâl imamı."],
+ ["İbn Mâce",273,"Kazvinli muhaddis; es-Sünen sahibi."],
+ ["Ebû Dâvûd",275,"es-Sünen sahibi; Ahmed b. Hanbel'in talebesi."],
+ ["Bakî b. Mahled",276,"Endülüs'e hadis ilmini taşıyan muhaddis; büyük bir müsned yazdı."],
+ ["İbn Kuteybe",276,"Te'vîlü muhtelifi'l-hadîs ve Garîbü'l-hadîs sahibi."],
+ ["Ebû Hâtim er-Râzî",277,"Rey'li hâfız; oğlunun el-Cerh ve't-ta'dîl'inin temel kaynağı."],
+ ["Tirmizî",279,"el-Câmi' (Sünen) ve eş-Şemâil sahibi."],
+ ["Bezzâr",292,"el-Bahrü'z-zehhâr (Müsned) sahibi."],
+ ["Firyâbî",301,"Ca'fer b. Muhammed; Bağdat'ta hadis meclisleriyle tanınan muhaddis ve kādı."],
+ ["İmam Nesâî",303,"es-Sünen sahibi."],
+ ["Ebû Ya'lâ el-Mevsılî",307,"el-Müsned sahibi."],
+ ["Taberî",310,"Câmiu'l-beyân (tefsir) ve Târîhu'r-rusül ve'l-mülûk sahibi."],
+ ["İbn Huzeyme",311,"es-Sahîh ve Kitâbü't-Tevhîd sahibi."],
+ ["Ebû Avâne",316,"Sahîh-i Müslim üzerine yazdığı el-Müstahrec ile tanınır."],
+ ["İmam Tahâvî",321,"Hanefî fakih; Şerhu meâni'l-âsâr sahibi."],
+ ["Ukaylî",322,"ed-Duafâü'l-kebîr sahibi."],
+ ["İbn Ebî Hâtim",327,"el-Cerh ve't-ta'dîl ve el-İlel sahibi."],
+ ["İbn Hibbân",354,"Sahîh (et-Takāsîm ve'l-envâ') ve es-Sikāt sahibi."],
+ ["Râmhürmüzî",360,"İlk müstakil usûl eseri el-Muhaddisü'l-fâsıl'ın sahibi."],
+ ["Taberânî",360,"el-Mu'cemü'l-kebîr, evsat ve sağîr sahibi."],
+ ["İbn Adî",365,"el-Kâmil fî duafâi'r-ricâl sahibi."],
+ ["İbn Şâhin",385,"Nâsihu'l-hadîs ve mensûhuh sahibi."],
+ ["Dârekutnî",385,"es-Sünen ve el-İlel sahibi; ilel ilminin zirvesi."],
+ ["Hattâbî",388,"Meâlimü's-sünen (ilk Ebû Dâvûd şerhi) sahibi."],
+ ["İbn Mende",395,"Ebû Abdullah; Kitâbü'l-Îmân ve Ma'rifetü's-sahâbe sahibi."],
+ ["Hâkim en-Nîsâbûrî",405,"el-Müstedrek ve Ma'rifetü ulûmi'l-hadîs sahibi."],
+ ["Ebû Nuaym el-İsfahânî",430,"Hilyetü'l-evliyâ sahibi."],
+ ["Kudâî",454,"eş-Şihâb ve Müsnedü'ş-Şihâb sahibi."],
+ ["İbn Hazm ez-Zâhirî",456,"Zâhirî mezhebinin büyük âlimi; el-Muhallâ sahibi."],
+ ["Beyhakî",458,"es-Sünenü'l-kübrâ ve Şuabü'l-îmân sahibi."],
+ ["Hatîb el-Bağdâdî",463,"Târîhu Bağdâd ve el-Kifâye sahibi."],
+ ["İbn Abdülber",463,"Endülüslü; et-Temhîd ve el-İstîâb sahibi."],
+ ["Humeydî (Ebû Abdullah el-Endelüsî)",488,"el-Cem' beyne's-Sahîhayn sahibi."],
+ ["Deylemî",509,"Firdevsü'l-ahbâr sahibi."],
+ ["Begavî",516,"\"Muhyi's-sünne\"; Mesâbîhu's-sünne ve Şerhu's-sünne sahibi."],
+ ["Kādî Iyâz",544,"eş-Şifâ ve İkmâlü'l-Mu'lim sahibi."],
+ ["Sem'ânî",562,"el-Ensâb sahibi."],
+ ["İbn Asâkir",571,"Târîhu medîneti Dımaşk sahibi."],
+ ["İbnü'l-Cevzî",597,"el-Mevzûât ve el-Muntazam sahibi."],
+ ["Abdülganî el-Makdisî",600,"el-Kemâl fî esmâi'r-ricâl ve Umdetü'l-ahkâm sahibi."],
+ ["Mecdüddin İbnü'l-Esîr el-Cezerî",606,"Câmiu'l-usûl ve en-Nihâye sahibi."],
+ ["İzzeddin İbnü'l-Esîr el-Cezerî",630,"Üsdü'l-ğâbe ve el-Kâmil fi't-târîh sahibi."],
+ ["Ziyâeddin İbnü'l-Esîr el-Cezerî",637,"Edip ve münşî; el-Meselü's-sâir sahibi. Mecdüddin ve İzzeddin'in kardeşi."],
+ ["İbnü's-Salâh",643,"Ulûmü'l-hadîs (Mukaddime) sahibi."],
+ ["Münzirî",656,"et-Tergîb ve't-terhîb sahibi."],
+ ["İmam Nevevî",676,"Riyâzü's-sâlihîn, el-Erbaûn ve Müslim şerhi sahibi."],
+ ["İbn Dakīkul'îd",702,"İhkâmü'l-ahkâm ve el-İktirâh sahibi."],
+ ["İbn Teymiyye",728,"Hanbelî âlim; Mecmûu'l-fetâvâ ile tanınır."],
+ ["İbn Cemâa",733,"Bedreddin; usûle dair el-Menhelü'r-revî sahibi, Mısır baş kādısı."],
+ ["Birzâlî",739,"Dımaşklı muhaddis ve tarihçi; Mizzî ve Zehebî'nin yakın dostu."],
+ ["Mizzî",742,"Tehzîbü'l-Kemâl ve Tuhfetü'l-eşrâf sahibi."],
+ ["Zehebî",748,"Mîzânü'l-i'tidâl ve Siyeru a'lâmi'n-nübelâ sahibi."],
+ ["İbnü'l-Kayyim el-Cevziyye",751,"İbn Teymiyye'nin talebesi; Zâdü'l-meâd sahibi."],
+ ["Takıyyüddin es-Sübkî",756,"Şâfiî fakih ve muhaddis; Tâceddin es-Sübkî'nin babası."],
+ ["Zeylaî",762,"Nasbu'r-râye sahibi."],
+ ["Tâceddin es-Sübkî",771,"Tabakātü'ş-Şâfiiyyeti'l-kübrâ sahibi."],
+ ["İbn Kesîr",774,"Tefsîrü'l-Kur'âni'l-azîm ve el-Bidâye ve'n-nihâye sahibi."],
+ ["İbn Râfi'",774,"Dımaşklı muhaddis; vefeyât ve tarih eserleriyle tanınır."],
+ ["Zerkeşî",794,"el-Bahrü'l-muhît ve İbnü's-Salâh'ın Mukaddime'sine en-Nüket sahibi."],
+ ["İbn Receb el-Hanbelî",795,"Câmiu'l-ulûm ve'l-hikem ve Şerhu İleli't-Tirmizî sahibi."],
+ ["İbnü'l-Mülakkın",804,"el-Bedrü'l-münîr ve et-Tavzîh sahibi."],
+ ["Zeynüddin el-Irâkī",806,"Elfiyye ve İhyâ tahrîci el-Muğnî sahibi."],
+ ["Heysemî",807,"Mecmau'z-zevâid sahibi; Irâkī'nin talebesi."],
+ ["Veliyyüddin el-Irâkī",826,"Zeynüddin el-Irâkī'nin oğlu; babasının Tarhu't-tesrîb'ini tamamladı."],
+ ["İbn Hacer el-Askalânî",852,"Fethu'l-bârî, Nuhbetü'l-fiker ve Tehzîbü't-Tehzîb sahibi."],
+ ["Bedreddin el-Aynî",855,"Umdetü'l-kārî (Buhârî şerhi) sahibi."],
+ ["Sehâvî",902,"Fethu'l-muğîs ve el-Makāsıdü'l-hasene sahibi; İbn Hacer'in talebesi."],
+ ["Süyûtî",911,"Tedrîbü'r-râvî ve el-Câmiu's-sağîr sahibi."],
+ ["Kastallânî",923,"İrşâdü's-sârî (Buhârî şerhi) sahibi."]
+].map((r,i)=>({i, n:r[0], d:r[1], note:r[2]}));
+
+/* ---------- durum ---------- */
+const GAMES = {
+ eser:{title:"Hadis Eserleri", modes:{tf:"Doğru / Yanlış", mc:"Test", match:"Eşleştirme", sort:"Sıralama", speed:"Zamana Karşı", flash:"Kartlar", lib:"Kütüphane"}},
+ vefat:{title:"Vefat Yılları", modes:{mc:"Test", type:"Yazarak", pair:"Önce mi, sonra mı?", sort:"Sıralama", match:"Eşleştirme", speed:"Zamana Karşı", list:"Liste"}}
+};
+let game = "home";
+const mode = {eser:store.get("ho.m.eser","tf"), vefat:store.get("ho.m.vefat","mc")};
+for(const g in mode) if(!GAMES[g].modes[mode[g]]) mode[g]=Object.keys(GAMES[g].modes)[0];
 let selected = new Set(store.get("hadis2.cats", Object.keys(CATS)).filter(k=>CATS[k]));
 let eras = new Set(store.get("hadis2.eras", ERAS.map(x=>x.id)));
-let view = store.get("hadis.view","tf"); if(!["tf","mc","match","chrono","lib"].includes(view)) view="tf";
+const VCENTS = [...new Set(V.map(p=>century(p.d)))].sort((a,b)=>a-b);
+let vcents = new Set(store.get("ho.vcents", VCENTS));
 const score = {ok:0, all:0, streak:0, best:store.get("hadis.best",0)};
+let speedTimer = null;
 
 function pool(){ return ENT.filter(e=>selected.has(e.k) && eras.has(eraOf(aDate(e.a)))); }
+function vpool(){ return V.filter(p=>vcents.has(century(p.d))); }
 
+/* ---------- bilgi kutuları ---------- */
 function kunye(e){
   return `<div class="kunye-box">
     <div class="t">${esc(e.t)}</div>
     <div>${esc(aName(e.a))} <span class="date">ö. h. ${aDate(e.a)}</span></div>
     <div class="x"><span class="tag">${esc(CATS[e.k].s)}</span>${e.of?` · Konusu: ${esc(e.of)}`:""}</div>
-    ${e.n?`<div class="x">${esc(e.n)}</div>`:""}
+    ${e.n?`<div class="info">${esc(e.n)}</div>`:""}
   </div>`;
 }
-
-/* ---------- süzgeç ---------- */
-function renderStats(){
-  const ds = Object.values(A).map(x=>x[1]);
-  $("#stats").innerHTML = `<span class="stat"><b>${ENT.length}</b> eser</span><span class="stat"><b>${Object.keys(A).length}</b> müellif</span><span class="stat"><b>${Object.keys(CATS).length}</b> tür</span><span class="stat">h. <b>${Math.min(...ds)}–${Math.max(...ds)}</b></span>`;
+function mini(e){ return `<div><b>${esc(e.t)}</b> · ${esc(aName(e.a))} <span class="date">h. ${aDate(e.a)}</span> · ${esc(CATS[e.k].s)}${e.n?`<br>${esc(e.n)}`:""}</div>`; }
+function person(p){
+  return `<div class="kunye-box"><div class="t">${esc(p.n)}</div>
+    <div><span class="date">ö. h. ${p.d}</span> · hicrî ${century(p.d)}. asır</div>
+    <div class="info">${esc(p.note)}</div></div>`;
 }
-function renderFilter(){
-  const counts = {}; ENT.forEach(e=>counts[e.k]=(counts[e.k]||0)+1);
-  $("#groups").innerHTML = GROUPS.map(g=>{
-    const allOn = g.cats.every(c=>selected.has(c));
-    return `<div class="grp"><div class="grp-h"><button data-g="${g.id}" title="${allOn?"Grubu kaldır":"Grubu seç"}">${esc(g.s)} ${allOn?"✓":""}</button></div>
-      <div class="chips">${g.cats.map(k=>`<button class="chip" data-k="${k}" aria-pressed="${selected.has(k)}">${esc(CATS[k].s)} <span class="n">${counts[k]||0}</span></button>`).join("")}</div></div>`;
-  }).join("");
-  $("#eras").innerHTML = ERAS.map(x=>`<button class="chip" data-era="${x.id}" aria-pressed="${eras.has(x.id)}">${x.s} <span class="n">${ENT.filter(e=>eraOf(aDate(e.a))===x.id).length}</span></button>`).join("");
-  const p = pool();
-  $("#poolNote").textContent = p.length<6 ? "En az 6 eser gerekli" : `${p.length} eser seçili`;
-}
-function saveFilter(){ store.set("hadis2.cats",[...selected]); store.set("hadis2.eras",[...eras]); renderFilter(); render(); }
-$("#groups").addEventListener("click",ev=>{
-  const c = ev.target.closest("[data-k]"), g = ev.target.closest("[data-g]");
-  if(c){ const k=c.dataset.k; selected.has(k)?selected.delete(k):selected.add(k); saveFilter(); }
-  else if(g){ const grp=GROUPS.find(x=>x.id===g.dataset.g); const on=grp.cats.every(k=>selected.has(k)); grp.cats.forEach(k=>on?selected.delete(k):selected.add(k)); saveFilter(); }
-});
-$("#eras").addEventListener("click",ev=>{ const b=ev.target.closest("[data-era]"); if(!b) return; const id=b.dataset.era; eras.has(id)?eras.delete(id):eras.add(id); saveFilter(); });
-$("#allOn").onclick=()=>{ selected=new Set(Object.keys(CATS)); eras=new Set(ERAS.map(x=>x.id)); saveFilter(); };
-$("#allOff").onclick=()=>{ selected=new Set(); saveFilter(); };
-$("#tabs").addEventListener("click",ev=>{ const b=ev.target.closest(".tab"); if(!b) return; view=b.dataset.v; store.set("hadis.view",view); render(true); });
 
-function renderScore(){
-  if(view==="lib"){ $("#scorebar").hidden=true; return; }
-  $("#scorebar").hidden=false;
+/* ---------- skor ---------- */
+function scoreHTML(){
   const pct = score.all?Math.round(100*score.ok/score.all):0;
-  $("#scorebar").innerHTML = `<span>Doğru<b>${score.ok} / ${score.all}</b></span><span>Başarı<b>%${pct}</b></span><span>Seri<b>${score.streak}</b></span><span>En iyi seri<b>${score.best}</b></span>`;
+  return `<span>Doğru<b>${score.ok}/${score.all}</b></span><span>Başarı<b>%${pct}</b></span><span>Seri<b>${score.streak}</b></span><span>En iyi<b>${score.best}</b></span>`;
 }
 function tally(ok){
   score.all++; if(ok){score.ok++;score.streak++; if(score.streak>score.best){score.best=score.streak; store.set("hadis.best",score.best);} } else score.streak=0;
-  renderScore();
+  const sb=$("#scorebar"); if(sb) sb.innerHTML=scoreHTML();
 }
-const tooSmall = ()=>`<div class="card empty">Soru üretmek için en az 6 eser gerekiyor. "Türler ve dönemler" bölümünden daha fazla tür veya dönem seçin.</div>`;
+const tooSmall = msg=>`<div class="card empty">${msg||"Soru üretmek için yeterli kayıt yok. Süzgeçten daha fazla tür veya dönem seçin."}</div>`;
+const tfQ = (kind,q,truth,info)=>({kind, q, layout:"tf", info, opts:[{label:"Doğru",ok:truth},{label:"Yanlış",ok:!truth}]});
 
-/* ---------- Doğru / Yanlış ---------- */
+/* ======================================================================
+   HADİS ESERLERİ — soru üreticileri
+   ====================================================================== */
 function otherAuthor(e, p){
   const banned = byKey[e.key];
   let c = [...new Set(p.map(x=>x.a))].filter(a=>!banned.has(a) && Math.abs(aDate(a)-aDate(e.a))<=300);
   if(c.length<2) c = Object.keys(A).filter(a=>!banned.has(a));
   return pick(c);
 }
-function makeTF(){
-  const p = pool(); const e = pick(p);
-  const T = `<em>«${esc(e.t)}»</em>`;
-  const kinds = ["author","author","date","date","cat","century","before"]; if(e.of) kinds.push("of","of");
-  let kind = pick(kinds); if(kind==="author" && !unamb(e)) kind="date";
-  let truth = Math.random()<0.5, text="", label="";
-  if(kind==="author"){
-    label="Müellif"; const who = truth?e.a:otherAuthor(e,p);
-    text = `${T} adlı eseri <strong>${esc(aName(who))}</strong> yazmıştır.`;
-  } else if(kind==="date"){
-    label="Vefat yılı"; let d=aDate(e.a);
-    if(!truth){ let nd; do{ nd = d + (Math.random()<.5?-1:1)*(8+rnd(110)); }while(nd<100 || nd===d || nd>1445); d=nd; }
-    text = `${T} müellifi ${esc(aName(e.a))}, <strong>h. ${d}</strong> yılında vefat etmiştir.`;
-  } else if(kind==="century"){
-    label="Asır"; let c=century(aDate(e.a));
-    if(!truth){ const opts=[c-2,c-1,c+1,c+2].filter(x=>x>=2 && x<=15); c=pick(opts); }
-    text = `${T} müellifi ${esc(aName(e.a))}, <strong>hicrî ${c}. asırda</strong> vefat etmiştir.`;
-  } else if(kind==="cat"){
-    label="Tür"; let k=e.k;
-    if(!truth){ k = pick(Object.keys(CATS).filter(c=>groupOf[c]!==groupOf[e.k])); }
-    text = `${T}, ${esc(CATS[k].p)} biridir.`;
-  } else if(kind==="of"){
-    label="Konusu"; let of=e.of;
-    if(!truth){ of = pick([...new Set(ENT.filter(x=>x.of && !ofClash(x.of,e.of)).map(x=>x.of))]); }
-    text = `${T}, <strong>${esc(of)}</strong> üzerine yazılmış bir çalışmadır.`;
-  } else {
-    label="Önce / sonra";
-    const others = p.filter(x=>Math.abs(aDate(x.a)-aDate(e.a))>=10);
-    const o = others.length?pick(others):pick(ENT.filter(x=>Math.abs(aDate(x.a)-aDate(e.a))>=10));
-    const real = aDate(e.a)<aDate(o.a);
-    text = `<strong>${esc(aName(e.a))}</strong> (${esc(e.t)}), <strong>${esc(aName(o.a))}</strong> (${esc(o.t)}) adlı âlimden <strong>önce</strong> vefat etmiştir.`;
-    truth = real; return {e, o, text, truth, label, answered:null};
-  }
-  return {e, text, truth, label, answered:null};
-}
-let tf=null, tfRound={n:0, ok:0, len:15};
-function renderTF(){
-  if(pool().length<6){ $("#view").innerHTML=tooSmall(); return; }
-  if(!tf) tf = makeTF();
-  const a = tf.answered, done = tfRound.n>=tfRound.len && a!==null;
-  const cls = v=> a===null?"": (v===tf.truth?"ok-c":(a===v?"bad-c":""));
-  $("#view").innerHTML = `<div class="card">
-    <div class="qmeta"><span class="qkind">${tf.label}</span><span>Soru ${Math.min(tfRound.n+(a===null?1:0),tfRound.len)} / ${tfRound.len} · bu turda ${tfRound.ok} doğru</span></div>
-    <p class="qtext">${tf.text}</p>
-    <div class="tf-btns" style="margin-top:14px">
-      <button class="big ${cls(true)}" id="bT" ${a!==null?"disabled":""}>Doğru</button>
-      <button class="big ${cls(false)}" id="bF" ${a!==null?"disabled":""}>Yanlış</button>
-    </div>
-    ${a!==null?`<div style="margin-top:16px;display:flex;flex-direction:column;gap:12px">
-      <div class="verdict ${a===tf.truth?"ok":"bad"}">${a===tf.truth?"Bildiniz.":"Bilemediniz."} Bu ifade ${tf.truth?"doğru":"yanlış"}.</div>
-      ${kunye(tf.e)}${tf.o?kunye(tf.o):""}
-      <div class="row">${done
-        ?`<span class="verdict">Tur bitti: ${tfRound.len} soruda ${tfRound.ok} doğru.</span><button class="primary" id="tfNew">Yeni tur</button>`
-        :`<button class="primary" id="tfNext">Sonraki soru</button>`}</div>
-    </div>`:`<p class="note" style="margin:12px 0 0">Kısayollar: D = Doğru, Y = Yanlış</p>`}
-  </div>`;
-  if(a===null){ $("#bT").onclick=()=>answerTF(true); $("#bF").onclick=()=>answerTF(false); }
-  else if(done){ $("#tfNew").onclick=()=>{ tfRound={n:0,ok:0,len:15}; tf=null; renderTF(); }; $("#tfNew").focus(); }
-  else { $("#tfNext").onclick=()=>{ tf=null; renderTF(); }; $("#tfNext").focus(); }
-}
-function answerTF(v){ if(tf.answered!==null) return; tf.answered=v; tfRound.n++; const ok=v===tf.truth; if(ok) tfRound.ok++; tally(ok); renderTF(); }
-document.addEventListener("keydown",ev=>{
-  if(ev.target.tagName==="INPUT") return;
-  const k=ev.key.toLowerCase();
-  if(view==="tf" && tf && tf.answered===null){ if(k==="d") answerTF(true); if(k==="y") answerTF(false); }
-  if(view==="mc" && mc && mc.answered===null && ["1","2","3","4"].includes(k)) answerMC(+k-1);
-});
-
-/* ---------- Test (çoktan seçmeli) ---------- */
-function opt(label, sub, ok, ent){ return {label, sub, ok, ent}; }
-const MCGEN = {
-  author(p){ // Bu eserin müellifi kim?
-    const e = pick(p.filter(unamb)); if(!e) return null;
-    const banned = byKey[e.key];
-    const cand = shuffle([...new Set(ENT.map(x=>x.a))].filter(a=>!banned.has(a) && Math.abs(aDate(a)-aDate(e.a))<=350)).slice(0,3);
-    return {label:"Müellif", q:`<em>«${esc(e.t)}»</em> adlı eserin müellifi kimdir?`, show:[e],
-      opts:[opt(aName(e.a),"",true), ...cand.map(a=>opt(aName(a),"",false))]};
-  },
-  date(p){ // Vefat yılı
-    const e = pick(p); const d=aDate(e.a); const ds=new Set([d]); const out=[];
-    let guard=0; while(out.length<3 && guard++<200){ const nd = d + (Math.random()<.5?-1:1)*(10+rnd(140)); if(nd<100||nd>1445) continue; if([...ds].some(x=>Math.abs(x-nd)<7)) continue; ds.add(nd); out.push(nd); }
-    return {label:"Vefat yılı", q:`<em>«${esc(e.t)}»</em> müellifi <strong>${esc(aName(e.a))}</strong> hangi yılda vefat etmiştir?`, show:[e],
-      opts:[opt(`h. ${d}`,"",true), ...out.map(x=>opt(`h. ${x}`,"",false))]};
-  },
-  cat(p){ // Hangi tür?
-    const e = pick(p);
-    const others = shuffle(GROUPS.filter(g=>g.id!==groupOf[e.k])).slice(0,3).map(g=>pick(g.cats));
-    return {label:"Tür", q:`<em>«${esc(e.t)}»</em> (${esc(aName(e.a))}) hangi türdendir?`, show:[e],
-      opts:[opt(CATS[e.k].s,"",true), ...others.map(k=>opt(CATS[k].s,"",false))]};
-  },
-  whichCat(p){ // Hangisi X türündendir?
-    const cats = [...new Set(p.map(e=>e.k))]; const k = pick(cats);
-    const right = pick(p.filter(e=>e.k===k));
-    const wrong = shuffle(ENT.filter(e=>groupOf[e.k]!==groupOf[k])).slice(0,3);
-    return {label:"Tür", q:`Aşağıdakilerden hangisi <strong>${esc(CATS[k].s.toLocaleLowerCase("tr"))}</strong> türünden bir eserdir?`, show:[right],
-      opts:[opt(right.t,aName(right.a),true,right), ...wrong.map(e=>opt(e.t,aName(e.a),false,e))]};
-  },
-  notBy(p){ // Hangisi X'in eseri değildir?
-    const counts={}; ENT.forEach(e=>{ if(unamb(e)) (counts[e.a] ||= []).push(e); });
-    const prolific = [...new Set(p.map(e=>e.a))].filter(a=>(counts[a]||[]).length>=3);
-    if(!prolific.length) return null;
-    const a = pick(prolific); const his = shuffle(counts[a]).slice(0,3);
-    const other = pick(ENT.filter(e=>unamb(e) && e.a!==a && Math.abs(aDate(e.a)-aDate(a))<=300));
-    return {label:"Müellif", q:`Aşağıdakilerden hangisi <strong>${esc(aName(a))}</strong> (ö. h. ${aDate(a)}) adlı âlimin eseri <strong>değildir</strong>?`, show:[other],
-      opts:[opt(other.t,"",true,other), ...his.map(e=>opt(e.t,"",false,e))]};
-  },
-  of(p){ // X üzerine yazılan eser hangisi?
-    const withOf = p.filter(e=>e.of); if(!withOf.length) return null;
-    const e = pick(withOf);
-    const wrong = shuffle(ENT.filter(x=>!ofClash(x.of,e.of) && !ofClash(x.t,e.of) && x.key!==e.key)).slice(0,3);
-    return {label:"Konusu", q:`Aşağıdakilerden hangisi <strong>${esc(e.of)}</strong> üzerine yazılmış bir eserdir?`, show:[e],
-      opts:[opt(e.t,aName(e.a),true,e), ...wrong.map(x=>opt(x.t,aName(x.a),false,x))]};
-  },
-  earliest(p){ // En önce vefat eden
-    const auth = shuffle([...new Set(p.map(e=>e.a))]); const chosen=[];
-    for(const a of auth){ if(chosen.every(b=>Math.abs(aDate(b)-aDate(a))>=8)) chosen.push(a); if(chosen.length===4) break; }
-    if(chosen.length<4) return null;
-    const late = Math.random()<.5; const target = chosen.slice().sort((x,y)=>late?aDate(y)-aDate(x):aDate(x)-aDate(y))[0];
-    const work = a=>pick(p.filter(e=>e.a===a));
-    const ws = chosen.map(a=>work(a));
-    return {label:"Kronoloji", q:`Aşağıdaki âlimlerden hangisi <strong>en ${late?"son":"önce"}</strong> vefat etmiştir?`, show:[],
-      opts:ws.map(e=>opt(aName(e.a),e.t,e.a===target,e)), dates:true};
-  }
+const ESER_TF = {
+  author(p){ const e=pick(p.filter(unamb)); if(!e) return null; const t=Math.random()<.5; const who=t?e.a:otherAuthor(e,p);
+    return tfQ("Müellif",`<em>«${esc(e.t)}»</em> adlı eseri <strong>${esc(aName(who))}</strong> yazmıştır.`,t,kunye(e)); },
+  date(p){ const e=pick(p); const t=Math.random()<.5; let d=aDate(e.a);
+    if(!t){ let nd; do{ nd=d+(Math.random()<.5?-1:1)*(8+rnd(110)); }while(nd<100||nd===d||nd>1445); d=nd; }
+    return tfQ("Vefat yılı",`<em>«${esc(e.t)}»</em> müellifi ${esc(aName(e.a))}, <strong>h. ${d}</strong> yılında vefat etmiştir.`,t,kunye(e)); },
+  century(p){ const e=pick(p); const t=Math.random()<.5; let c=century(aDate(e.a));
+    if(!t) c=pick([c-2,c-1,c+1,c+2].filter(x=>x>=2&&x<=15));
+    return tfQ("Asır",`<em>«${esc(e.t)}»</em> müellifi ${esc(aName(e.a))}, <strong>hicrî ${c}. asırda</strong> vefat etmiştir.`,t,kunye(e)); },
+  cat(p){ const e=pick(p); const t=Math.random()<.5; const k=t?e.k:pick(Object.keys(CATS).filter(c=>groupOf[c]!==groupOf[e.k]));
+    return tfQ("Tür",`<em>«${esc(e.t)}»</em>, ${esc(CATS[k].p)} biridir.`,t,kunye(e)); },
+  of(p){ const w=p.filter(e=>e.of); if(!w.length) return null; const e=pick(w); const t=Math.random()<.5;
+    const of=t?e.of:pick([...new Set(ENT.filter(x=>x.of&&!ofClash(x.of,e.of)).map(x=>x.of))]);
+    return tfQ("Konusu",`<em>«${esc(e.t)}»</em>, <strong>${esc(of)}</strong> üzerine yazılmış bir çalışmadır.`,t,kunye(e)); },
+  before(p){ const e=pick(p); const others=p.filter(x=>Math.abs(aDate(x.a)-aDate(e.a))>=10); if(!others.length) return null; const o=pick(others);
+    return tfQ("Önce / sonra",`<strong>${esc(aName(e.a))}</strong> (${esc(e.t)}), <strong>${esc(aName(o.a))}</strong> (${esc(o.t)}) adlı âlimden <strong>önce</strong> vefat etmiştir.`,aDate(e.a)<aDate(o.a),kunye(e)+kunye(o)); },
+  note(p){ const w=p.filter(e=>e.n && !e.n.startsWith("Aynı adı")); if(w.length<2) return null; const e=pick(w); const t=Math.random()<.5;
+    let src=e; if(!t){ const c=w.filter(x=>groupOf[x.k]!==groupOf[e.k]); if(!c.length) return null; src=pick(c); }
+    return tfQ("Açıklama",`<em>«${esc(e.t)}»</em> hakkında: <q>${esc(src.n)}</q>`,t,kunye(e)+(t?"":`<p class="note">Bu açıklama aslında şu esere ait:</p>${kunye(src)}`)); }
 };
-let mc=null, mcRound={n:0, ok:0, len:10};
-function makeMC(){
-  const p = pool();
-  for(let tries=0; tries<20; tries++){
-    const g = pick(["author","author","date","cat","whichCat","notBy","of","earliest"]);
-    const q = MCGEN[g](p);
-    if(q && q.opts.length===4 && new Set(q.opts.map(o=>o.label)).size===4){ q.opts=shuffle(q.opts); q.answered=null; return q; }
-  }
-  return null;
-}
-function renderMC(){
-  if(pool().length<6){ $("#view").innerHTML=tooSmall(); return; }
-  if(!mc) mc = makeMC();
-  if(!mc){ $("#view").innerHTML=tooSmall(); return; }
-  const a = mc.answered, done = mcRound.n>=mcRound.len && a!==null;
-  const showList = a!==null ? (mc.dates ? mc.opts.map(o=>o.ent) : mc.show) : [];
-  $("#view").innerHTML = `<div class="card">
-    <div class="qmeta"><span class="qkind">${mc.label}</span><span>Soru ${Math.min(mcRound.n+(a===null?1:0),mcRound.len)} / ${mcRound.len} · bu turda ${mcRound.ok} doğru</span></div>
-    <p class="qtext">${mc.q}</p>
-    <div class="opts" style="margin-top:14px">
-      ${mc.opts.map((o,i)=>`<button class="opt ${a!==null?(o.ok?"ok-c":(a===i?"bad-c":"")):""}" data-i="${i}" ${a!==null?"disabled":""}>
-        <span>${i+1}. ${esc(o.label)}${a!==null&&mc.dates?` <span class="date">h. ${aDate(o.ent.a)}</span>`:""}</span>${o.sub?`<span class="s">${esc(o.sub)}</span>`:""}</button>`).join("")}
-    </div>
-    ${a!==null?`<div style="margin-top:16px;display:flex;flex-direction:column;gap:12px">
-      <div class="verdict ${mc.opts[a].ok?"ok":"bad"}">${mc.opts[a].ok?"Bildiniz.":"Bilemediniz."}</div>
-      ${showList.map(kunye).join("")}
-      <div class="row">${done
-        ?`<span class="verdict">Tur bitti: ${mcRound.len} soruda ${mcRound.ok} doğru.</span><button class="primary" id="mcNew">Yeni tur</button>`
-        :`<button class="primary" id="mcNext">Sonraki soru</button>`}</div>
-    </div>`:`<p class="note" style="margin:12px 0 0">Kısayollar: 1–4 tuşları</p>`}
-  </div>`;
-  if(a===null) $("#view").querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>answerMC(+b.dataset.i));
-  else if(done){ $("#mcNew").onclick=()=>{ mcRound={n:0,ok:0,len:10}; mc=null; renderMC(); }; $("#mcNew").focus(); }
-  else { $("#mcNext").onclick=()=>{ mc=null; renderMC(); }; $("#mcNext").focus(); }
-}
-function answerMC(i){ if(mc.answered!==null) return; mc.answered=i; mcRound.n++; const ok=mc.opts[i].ok; if(ok) mcRound.ok++; tally(ok); renderMC(); }
+function eserTF(){ const p=pool(); for(let i=0;i<20;i++){ const g=pick(["author","author","date","date","century","cat","of","of","before","note"]); const q=ESER_TF[g](p); if(q) return q; } return null; }
 
-/* ---------- Eşleştirme ---------- */
-let mt=null, mMode=store.get("hadis.mmode","author");
-const MMODES = {author:"Eser ↔ Müellif", date:"Müellif ↔ Vefat", cat:"Eser ↔ Tür", of:"Eser ↔ Konusu"};
-if(!MMODES[mMode]) mMode="author";
-function rightVal(e){ return mMode==="author"?aName(e.a): mMode==="date"?`h. ${aDate(e.a)}`: mMode==="cat"?CATS[e.k].s: e.of; }
-function leftVal(e){ return mMode==="date"?aName(e.a):e.t; }
-function leftSub(e){ return mMode==="date"?e.t: (mMode==="of"||mMode==="cat")?aName(e.a):""; }
-function makeMatch(){
-  let p = shuffle(pool()); if(mMode==="of") p = p.filter(e=>e.of);
-  const chosen=[], usedL=new Set(), usedR=new Set(), usedKey=new Set(), usedA=new Set(), usedG=new Set();
-  for(const e of p){
-    const L=leftVal(e), R=rightVal(e);
-    if(usedL.has(L)||usedR.has(R)||usedKey.has(e.key)) continue;
-    if(mMode==="author" && !unamb(e)) continue;
-    if(mMode==="date" && usedA.has(e.a)) continue;
-    if(mMode==="cat" && usedG.has(groupOf[e.k]) && new Set(p.map(x=>groupOf[x.k])).size>=5) continue; // türler farklı gruplardan
-    chosen.push(e); usedL.add(L); usedR.add(R); usedKey.add(e.key); usedA.add(e.a); usedG.add(groupOf[e.k]);
-    if(chosen.length===5) break;
-  }
-  return {items:chosen, right:shuffle(chosen.map(e=>e.i)), done:new Set(), selL:null, selR:null, miss:0, wrong:null, t0:Date.now()};
-}
-function renderMatch(){
-  const seg = `<div class="row"><div class="seg" id="mseg">${Object.entries(MMODES).map(([k,v])=>`<button data-m="${k}" aria-pressed="${mMode===k}">${v}</button>`).join("")}</div></div>`;
-  if(pool().length<6){ $("#view").innerHTML=seg+tooSmall(); bindSeg(); return; }
-  if(!mt) mt = makeMatch();
-  if(mt.items.length<3){ $("#view").innerHTML=seg+`<div class="card empty">Seçili türlerde bu eşleştirme biçimi için yeterli eser yok. Başka bir biçim veya daha çok tür seçin.</div>`; bindSeg(); return; }
-  const byI = Object.fromEntries(mt.items.map(e=>[e.i,e]));
-  const finished = mt.done.size===mt.items.length;
-  const secs = Math.round(((mt.t1||Date.now())-mt.t0)/1000);
-  $("#view").innerHTML = seg + `<div class="card">
-    <div class="qmeta"><span>Soldan birini, sonra sağdan karşılığını seçin</span><span>Hata: ${mt.miss}</span></div>
-    <div class="match" style="margin-top:12px">
-      <div class="col"><h3>${mMode==="date"?"Müellif":"Eser"}</h3>
-        ${mt.items.map(e=>`<button class="tile ${mt.done.has(e.i)?"done":""} ${mt.selL===e.i?"sel":""} ${mt.wrong&&mt.wrong[0]===e.i?"wrong":""}" data-l="${e.i}" ${mt.done.has(e.i)?"disabled":""}>${esc(leftVal(e))}${leftSub(e)?`<span class="s">${esc(leftSub(e))}</span>`:""}</button>`).join("")}
-      </div>
-      <div class="col"><h3>${{author:"Müellif",date:"Vefat",cat:"Tür",of:"Konusu"}[mMode]}</h3>
-        ${mt.right.map(i=>`<button class="tile ${mt.done.has(i)?"done":""} ${mt.selR===i?"sel":""} ${mt.wrong&&mt.wrong[1]===i?"wrong":""}" data-r="${i}" ${mt.done.has(i)?"disabled":""}>${esc(rightVal(byI[i]))}</button>`).join("")}
-      </div>
-    </div>
-    ${finished?`<div style="margin-top:16px;display:flex;flex-direction:column;gap:12px">
-      <div class="verdict ok">Tamamlandı: ${secs} saniye, ${mt.miss} hata.</div>
-      <div style="display:flex;flex-direction:column;gap:10px">${mt.items.map(kunye).join("")}</div>
-      <div class="row"><button class="primary" id="mNew">Yeni tur</button></div></div>`
-      :`<div class="row" style="margin-top:14px"><button class="secondary" id="mNew">Karıştır, yeni tur</button></div>`}
+const ESER_MC = {
+  author(p){ const e=pick(p.filter(unamb)); if(!e) return null; const banned=byKey[e.key];
+    const c=shuffle([...new Set(ENT.map(x=>x.a))].filter(a=>!banned.has(a)&&Math.abs(aDate(a)-aDate(e.a))<=350)).slice(0,3);
+    return {kind:"Müellif", q:`<em>«${esc(e.t)}»</em> adlı eserin müellifi kimdir?`, info:kunye(e),
+      opts:[{label:aName(e.a),ok:true},...c.map(a=>({label:aName(a),ok:false}))]}; },
+  byAuthor(p){ const e=pick(p.filter(unamb)); if(!e) return null;
+    const w=shuffle(ENT.filter(x=>unamb(x)&&x.a!==e.a&&Math.abs(aDate(x.a)-aDate(e.a))<=250)).slice(0,3);
+    return {kind:"Müellif", q:`Aşağıdakilerden hangisi <strong>${esc(aName(e.a))}</strong> adlı âlimin eseridir?`, info:kunye(e)+`<div class="mini">${w.map(mini).join("")}</div>`,
+      opts:[{label:e.t,ok:true},...w.map(x=>({label:x.t,sub:"",ok:false}))]}; },
+  date(p){ const e=pick(p); const d=aDate(e.a); const ds=[d]; let g=0;
+    while(ds.length<4&&g++<300){ const nd=d+(Math.random()<.5?-1:1)*(10+rnd(140)); if(nd<100||nd>1445||ds.some(x=>Math.abs(x-nd)<7)) continue; ds.push(nd); }
+    return {kind:"Vefat yılı", q:`<em>«${esc(e.t)}»</em> müellifi <strong>${esc(aName(e.a))}</strong> hangi yılda vefat etmiştir?`, info:kunye(e),
+      opts:ds.map(x=>({label:`h. ${x}`,ok:x===d}))}; },
+  century(p){ const e=pick(p); const c=century(aDate(e.a)); const cs=shuffle([c-3,c-2,c-1,c+1,c+2,c+3].filter(x=>x>=2&&x<=15)).slice(0,3);
+    return {kind:"Asır", q:`<em>«${esc(e.t)}»</em> hangi hicrî asırda yazılmıştır? <span class="note">(müellifin vefatına göre)</span>`, info:kunye(e),
+      opts:[c,...cs].map(x=>({label:`${x}. asır`,ok:x===c}))}; },
+  cat(p){ const e=pick(p); const others=shuffle(GROUPS.filter(g=>g.id!==groupOf[e.k])).slice(0,3).map(g=>pick(g.cats));
+    return {kind:"Tür", q:`<em>«${esc(e.t)}»</em> (${esc(aName(e.a))}) hangi türdendir?`, info:kunye(e),
+      opts:[{label:CATS[e.k].s,ok:true},...others.map(k=>({label:CATS[k].s,ok:false}))]}; },
+  whichCat(p){ const k=pick([...new Set(p.map(e=>e.k))]); const r=pick(p.filter(e=>e.k===k)); const w=shuffle(ENT.filter(e=>groupOf[e.k]!==groupOf[k])).slice(0,3);
+    return {kind:"Tür", q:`Aşağıdakilerden hangisi <strong>${esc(CATS[k].s.toLocaleLowerCase("tr"))}</strong> türünden bir eserdir?`, info:`<div class="mini">${[r,...w].map(mini).join("")}</div>`,
+      opts:[{label:r.t,sub:aName(r.a),ok:true},...w.map(e=>({label:e.t,sub:aName(e.a),ok:false}))]}; },
+  odd(p){ const counts={}; ENT.forEach(e=>(counts[e.k] ||= []).push(e));
+    const cats=[...new Set(p.map(e=>e.k))].filter(k=>new Set(counts[k].map(e=>e.t)).size>=3); if(!cats.length) return null;
+    const k=pick(cats); const same=[]; for(const e of shuffle(counts[k])){ if(!same.some(x=>x.t===e.t)) same.push(e); if(same.length===3) break; }
+    const odd=pick(ENT.filter(e=>groupOf[e.k]!==groupOf[k]));
+    return {kind:"Farklı olan", q:`Aşağıdakilerden hangisi diğerlerinden <strong>farklı bir türdendir</strong>?`, info:`<div class="mini">${[odd,...same].map(mini).join("")}</div>`,
+      opts:[{label:odd.t,sub:aName(odd.a),ok:true},...same.map(e=>({label:e.t,sub:aName(e.a),ok:false}))]}; },
+  notBy(p){ const counts={}; ENT.forEach(e=>{ if(unamb(e)) (counts[e.a] ||= []).push(e); });
+    const pro=[...new Set(p.map(e=>e.a))].filter(a=>(counts[a]||[]).length>=3); if(!pro.length) return null;
+    const a=pick(pro); const his=shuffle(counts[a]).slice(0,3); const other=pick(ENT.filter(e=>unamb(e)&&e.a!==a&&Math.abs(aDate(e.a)-aDate(a))<=300));
+    return {kind:"Müellif", q:`Aşağıdakilerden hangisi <strong>${esc(aName(a))}</strong> (ö. h. ${aDate(a)}) adlı âlimin eseri <strong>değildir</strong>?`, info:kunye(other)+`<div class="mini">${his.map(mini).join("")}</div>`,
+      opts:[{label:other.t,ok:true},...his.map(e=>({label:e.t,ok:false}))]}; },
+  of(p){ const w=p.filter(e=>e.of); if(!w.length) return null; const e=pick(w);
+    const wr=shuffle(ENT.filter(x=>!ofClash(x.of,e.of)&&!ofClash(x.t,e.of)&&x.key!==e.key)).slice(0,3);
+    return {kind:"Konusu", q:`Aşağıdakilerden hangisi <strong>${esc(e.of)}</strong> üzerine yazılmış bir eserdir?`, info:kunye(e),
+      opts:[{label:e.t,sub:aName(e.a),ok:true},...wr.map(x=>({label:x.t,sub:aName(x.a),ok:false}))]}; },
+  note(p){ const w=p.filter(e=>e.n&&!e.n.startsWith("Aynı adı")); if(!w.length) return null; const e=pick(w);
+    const wr=[]; for(const x of shuffle(ENT.filter(x=>x.key!==e.key&&groupOf[x.k]===groupOf[e.k]))){ if(!wr.some(y=>y.t===x.t)&&x.t!==e.t) wr.push(x); if(wr.length===3) break; }
+    if(wr.length<3) return null;
+    return {kind:"Açıklama", q:`Şu açıklama hangi esere aittir? <q>${esc(e.n)}</q>`, info:kunye(e),
+      opts:[{label:e.t,sub:aName(e.a),ok:true},...wr.map(x=>({label:x.t,sub:aName(x.a),ok:false}))]}; },
+  earliest(p){ const au=shuffle([...new Set(p.map(e=>e.a))]); const ch=[];
+    for(const a of au){ if(ch.every(b=>Math.abs(aDate(b)-aDate(a))>=8)) ch.push(a); if(ch.length===4) break; }
+    if(ch.length<4) return null; const late=Math.random()<.5; const tg=ch.slice().sort((x,y)=>late?aDate(y)-aDate(x):aDate(x)-aDate(y))[0];
+    const ws=ch.map(a=>pick(p.filter(e=>e.a===a)));
+    return {kind:"Kronoloji", q:`Aşağıdaki âlimlerden hangisi <strong>en ${late?"son":"önce"}</strong> vefat etmiştir?`, info:`<div class="mini">${ws.map(mini).join("")}</div>`,
+      opts:ws.map(e=>({label:aName(e.a),sub:e.t,ok:e.a===tg,after:`h. ${aDate(e.a)}`}))}; }
+};
+function eserMC(){ const p=pool(); for(let i=0;i<30;i++){ const g=pick(["author","author","byAuthor","date","century","cat","whichCat","odd","notBy","of","note","note","earliest"]);
+  const q=ESER_MC[g](p); if(q&&q.opts.length===4&&new Set(q.opts.map(o=>o.label)).size===4){ q.opts=shuffle(q.opts); return q; } } return null; }
+
+/* ======================================================================
+   VEFAT YILLARI — soru üreticileri
+   ====================================================================== */
+const VEF = {
+  year(p){ const x=pick(p); const near=shuffle([...new Set(V.map(v=>v.d).filter(d=>Math.abs(d-x.d)>=3&&Math.abs(d-x.d)<=70))]); const o=near.slice(0,3);
+    while(o.length<3){ const nd=x.d+(Math.random()<.5?-1:1)*(4+rnd(40)); if(nd>0&&!o.includes(nd)&&Math.abs(nd-x.d)>=3) o.push(nd); }
+    return {kind:"Vefat yılı", q:`<strong>${esc(x.n)}</strong> hangi yılda vefat etmiştir?`, info:person(x), opts:[x.d,...o].map(d=>({label:`h. ${d}`,ok:d===x.d}))}; },
+  cent(p){ const x=pick(p); const c=century(x.d); const cs=shuffle([c-2,c-1,c+1,c+2].filter(v=>v>=2&&v<=10)).slice(0,3);
+    if(cs.length<3) return null;
+    return {kind:"Asır", q:`<strong>${esc(x.n)}</strong> hangi hicrî asırda vefat etmiştir?`, info:person(x), opts:[c,...cs].map(v=>({label:`${v}. asır`,ok:v===c}))}; },
+  whichCent(p){ const c=pick([...new Set(p.map(x=>century(x.d)))]); const r=pick(p.filter(x=>century(x.d)===c)); const w=shuffle(V.filter(x=>century(x.d)!==c)).slice(0,3);
+    return {kind:"Asır", q:`Aşağıdakilerden hangisi <strong>hicrî ${c}. asırda</strong> vefat etmiştir?`, info:[r,...w].map(person).join(""),
+      opts:[r,...w].map(x=>({label:x.n,ok:x===r,after:`h. ${x.d}`}))}; },
+  earliest(p){ const ch=[]; for(const x of shuffle(p)){ if(ch.every(y=>Math.abs(y.d-x.d)>=3)) ch.push(x); if(ch.length===4) break; } if(ch.length<4) return null;
+    const late=Math.random()<.5; const tg=ch.slice().sort((a,b)=>late?b.d-a.d:a.d-b.d)[0];
+    return {kind:"Kronoloji", q:`Aşağıdakilerden hangisi <strong>en ${late?"son":"önce"}</strong> vefat etmiştir?`, info:ch.map(person).join(""),
+      opts:ch.map(x=>({label:x.n,ok:x===tg,after:`h. ${x.d}`}))}; },
+  gap(p){ let a,b,g=0; do{ a=pick(p); b=pick(p); }while(Math.abs(a.d-b.d)<5 && g++<50); const gap=Math.abs(a.d-b.d); if(gap<5) return null;
+    const os=new Set([gap]); let t=0; while(os.size<4&&t++<100){ const v=gap+(Math.random()<.5?-1:1)*(5+rnd(Math.max(10,Math.round(gap*.6)))); if(v>0) os.add(v); }
+    if(os.size<4) return null;
+    return {kind:"Aradaki fark", q:`<strong>${esc(a.n)}</strong> ile <strong>${esc(b.n)}</strong> arasında yaklaşık kaç yıl vardır? <span class="note">(vefat yıllarına göre)</span>`, info:person(a)+person(b),
+      opts:[...os].map(v=>({label:`${v} yıl`,ok:v===gap}))}; },
+  tfYear(p){ const x=pick(p); const t=Math.random()<.5; let d=x.d; if(!t){ let nd; do{ nd=x.d+(Math.random()<.5?-1:1)*(3+rnd(45)); }while(nd<1||nd===x.d); d=nd; }
+    return tfQ("Doğru mu?",`<strong>${esc(x.n)}</strong>, <strong>h. ${d}</strong> yılında vefat etmiştir.`,t,person(x)); },
+  pair(p){ let a,b,g=0; do{ a=pick(p); b=pick(p); }while(a.d===b.d && g++<50); if(a.d===b.d) return null; const late=Math.random()<.35;
+    const tg = late ? (a.d>b.d?a:b) : (a.d<b.d?a:b);
+    return {kind:"Önce mi, sonra mı?", layout:"pair", q:`Hangisi <strong>daha ${late?"sonra":"önce"}</strong> vefat etmiştir?`, info:person(a)+person(b),
+      opts:[a,b].map(x=>({label:x.n,ok:x===tg,after:`h. ${x.d}`}))}; }
+};
+function vefatMC(){ const p=vpool(); if(p.length<4) return null; for(let i=0;i<30;i++){ const g=pick(["year","year","year","cent","whichCent","earliest","gap","tfYear"]); const q=VEF[g](p);
+  if(q&&(q.layout==="tf"||new Set(q.opts.map(o=>o.label)).size===q.opts.length)){ if(q.layout!=="tf") q.opts=shuffle(q.opts); return q; } } return null; }
+function vefatPair(){ const p=vpool(); if(p.length<2) return null; return VEF.pair(p); }
+
+/* ======================================================================
+   MOTORLAR
+   ====================================================================== */
+/* --- Soru turu (tek seçimli) --- */
+let Q=null;
+function startQuiz(gen,len){ Q={gen,len,n:0,ok:0,cur:null,ans:null}; }
+function quizHTML(){
+  if(!Q.cur){ Q.cur=Q.gen(); Q.ans=null; }
+  const c=Q.cur; if(!c) return tooSmall();
+  const a=Q.ans, done=Q.n>=Q.len && a!==null;
+  const wrap = c.layout==="tf"||c.layout==="pair" ? "tf-btns" : "opts";
+  const btn = c.layout==="tf"||c.layout==="pair" ? "big" : "opt";
+  return `<div class="card">
+    <div class="qmeta"><span class="qkind">${esc(c.kind)}</span><span>Soru ${Math.min(Q.n+(a===null?1:0),Q.len)} / ${Q.len} · bu turda ${Q.ok} doğru</span></div>
+    <p class="qtext">${c.q}</p>
+    <div class="${wrap}">${c.opts.map((o,i)=>`<button class="${btn} ${a!==null?(o.ok?"ok-c":(a===i?"bad-c":"")):""}" data-qi="${i}" ${a!==null?"disabled":""}>
+      ${c.layout==="tf"?"":`${i+1}. `}${esc(o.label)}${o.sub?`<span class="s">${esc(o.sub)}</span>`:""}${a!==null&&o.after?`<span class="s">${esc(o.after)}</span>`:""}</button>`).join("")}</div>
+    ${a!==null?`<div class="after">
+      <div class="verdict ${c.opts[a].ok?"ok":"bad"}">${c.opts[a].ok?"Bildiniz.":"Bilemediniz."}${c.layout==="tf"?` Bu ifade ${c.opts[0].ok?"doğru":"yanlış"}.`:""}</div>
+      <div class="infos">${c.info||""}</div>
+      <div class="row">${done?`<span class="verdict">Tur bitti: ${Q.len} soruda ${Q.ok} doğru.</span><button class="primary" id="qNew">Yeni tur</button>`:`<button class="primary" id="qNext">Sonraki soru</button>`}</div>
+    </div>`:`<p class="note" style="margin-top:12px">${c.layout==="tf"?"Kısayollar: D = Doğru, Y = Yanlış":c.layout==="pair"?"Kısayollar: 1 = sol, 2 = sağ":"Kısayollar: 1–4 tuşları"}</p>`}
   </div>`;
-  bindSeg();
-  $("#mNew").onclick=()=>{ mt=null; renderMatch(); };
-  $("#view").querySelectorAll("[data-l]").forEach(b=>b.onclick=()=>{ mt.selL=+b.dataset.l; mt.wrong=null; tryMatch(); });
-  $("#view").querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{ mt.selR=+b.dataset.r; mt.wrong=null; tryMatch(); });
 }
-function bindSeg(){ $("#mseg").querySelectorAll("button").forEach(b=>b.onclick=()=>{ mMode=b.dataset.m; store.set("hadis.mmode",mMode); mt=null; renderMatch(); }); }
-function tryMatch(){
-  if(mt.selL!==null && mt.selR!==null){
-    const ok = mt.selL===mt.selR;
-    if(ok){ mt.done.add(mt.selL); tally(true); } else { mt.miss++; mt.wrong=[mt.selL,mt.selR]; tally(false); }
-    mt.selL=null; mt.selR=null;
-    if(mt.done.size===mt.items.length && !mt.t1) mt.t1=Date.now();
+function bindQuiz(){
+  document.querySelectorAll("[data-qi]").forEach(b=>b.onclick=()=>answerQuiz(+b.dataset.qi));
+  const nx=$("#qNext"), nw=$("#qNew");
+  if(nx){ nx.onclick=()=>{ Q.cur=null; drawView(); }; nx.focus({preventScroll:true}); }
+  if(nw){ nw.onclick=()=>{ startQuiz(Q.gen,Q.len); drawView(); }; nw.focus({preventScroll:true}); }
+}
+function answerQuiz(i){ if(!Q||!Q.cur||Q.ans!==null) return; Q.ans=i; Q.n++; const ok=Q.cur.opts[i].ok; if(ok) Q.ok++; tally(ok); drawView(); }
+
+/* --- Zamana karşı --- */
+let S=null;
+function startSpeed(gen,key){ S={gen,key,dur:60,ok:0,all:0,cur:null,started:false,end:0,missed:[],best:store.get("ho.speed."+key,0)}; }
+function speedHTML(){
+  if(!S.started) return `<div class="card" style="text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center">
+      <span class="qkind">Zamana karşı</span><p class="qtext" style="margin:0">60 saniyede kaç soruyu doğru cevaplayabilirsin?</p>
+      <p class="note">${S.key==="eser"?"Doğru/Yanlış soruları gelir.":"\"Hangisi daha önce/sonra vefat etti?\" soruları gelir."} Yanlış cevap seriyi bozar ama süre durmaz.</p>
+      ${S.best?`<p class="note">Rekorun: <b>${S.best}</b> doğru</p>`:""}
+      <button class="primary" id="spStart">Başla</button></div>`;
+  const left=Math.max(0,S.end-Date.now());
+  if(left<=0){
+    return `<div class="card" style="display:flex;flex-direction:column;gap:12px">
+      <span class="qkind" style="align-self:flex-start">Süre doldu</span>
+      <div class="row" style="align-items:flex-end;gap:16px"><span class="bigstat">${S.ok}</span><span class="note">doğru · ${S.all} soru${S.ok>=S.best&&S.ok>0?" · <b>Yeni rekor!</b>":` · rekor ${S.best}`}</span></div>
+      ${S.missed.length?`<p class="note">Kaçırdıkların:</p><div class="infos">${S.missed.slice(0,8).join("")}</div>`:""}
+      <div class="row"><button class="primary" id="spStart">Tekrar oyna</button></div></div>`;
   }
-  renderMatch();
+  if(!S.cur) S.cur=S.gen();
+  const c=S.cur; if(!c) return tooSmall();
+  const wrap="tf-btns", btn="big";
+  return `<div class="card" id="spCard">
+    <div class="qmeta"><span class="qkind">${esc(c.kind)}</span><span id="spLeft">${Math.ceil(left/1000)} sn · ${S.ok} doğru</span></div>
+    <div class="timer"><i id="spBar" style="width:${100*left/(S.dur*1000)}%"></i></div>
+    <p class="qtext">${c.q}</p>
+    <div class="${wrap}">${c.opts.map((o,i)=>`<button class="${btn}" data-si="${i}">${esc(o.label)}</button>`).join("")}</div></div>`;
+}
+function bindSpeed(){
+  const st=$("#spStart"); if(st) st.onclick=()=>{ S.started=true; S.ok=0; S.all=0; S.missed=[]; S.cur=null; S.end=Date.now()+S.dur*1000; runTimer(); drawView(); };
+  document.querySelectorAll("[data-si]").forEach(b=>b.onclick=()=>answerSpeed(+b.dataset.si));
+}
+function answerSpeed(i){
+  if(!S||!S.started||!S.cur||Date.now()>=S.end) return;
+  const ok=S.cur.opts[i].ok; S.all++; if(ok) S.ok++; else S.missed.push(S.cur.info); tally(ok);
+  S.cur=null; drawView(); const card=$("#spCard"); if(card){ card.classList.add(ok?"flash-ok":"flash-bad"); setTimeout(()=>card.classList.remove("flash-ok","flash-bad"),250); }
+}
+function runTimer(){
+  clearInterval(speedTimer);
+  speedTimer=setInterval(()=>{
+    if(!S||!S.started){ clearInterval(speedTimer); return; }
+    const left=S.end-Date.now();
+    if(left<=0){ clearInterval(speedTimer); if(S.ok>S.best){ S.best=S.ok; store.set("ho.speed."+S.key,S.ok); } drawView(); return; }
+    const l=$("#spLeft"), bar=$("#spBar"); if(l) l.textContent=`${Math.ceil(left/1000)} sn · ${S.ok} doğru`; if(bar) bar.style.width=`${100*left/(S.dur*1000)}%`;
+  },200);
 }
 
-/* ---------- Kronoloji ---------- */
-let ch=null;
-function makeChrono(){
-  const authors = shuffle([...new Set(pool().map(e=>e.a))]); const chosen=[];
-  for(const a of authors){ if(chosen.some(b=>Math.abs(aDate(b)-aDate(a))<6)) continue; chosen.push(a); if(chosen.length===5) break; }
-  return {list:chosen.map(a=>({a, w:pick(pool().filter(e=>e.a===a)).t})), order:[], checked:false};
-}
-function renderChrono(){
-  if(!ch) ch = makeChrono();
-  if(ch.list.length<4){ $("#view").innerHTML=`<div class="card empty">Kronoloji için yeterli sayıda farklı müellif yok; daha çok tür veya dönem seçin.</div>`; return; }
-  const sorted = ch.list.slice().sort((x,y)=>aDate(x.a)-aDate(y.a)).map(x=>x.a);
-  const full = ch.order.length===ch.list.length;
-  let correct=0; if(ch.checked) ch.order.forEach((a,i)=>{ if(aDate(a)===aDate(sorted[i])) correct++; });
-  const shown = ch.checked ? ch.order.map(a=>ch.list.find(x=>x.a===a)) : ch.list;
-  $("#view").innerHTML = `<div class="card">
-    <div class="qmeta"><span>Müellifleri vefat sırasına göre, en eskiden başlayarak seçin</span><span>${ch.order.length} / ${ch.list.length}</span></div>
-    <div class="chrono" style="margin-top:12px">
-      ${shown.map(x=>{ const pos=ch.order.indexOf(x.a); const okp = ch.checked ? aDate(x.a)===aDate(sorted[pos]) : null;
-        return `<button class="ctile ${pos>=0?"placed":""} ${okp===true?"ok":okp===false?"bad":""}" data-a="${x.a}" ${ch.checked?"disabled":""}>
-          <span class="num">${pos>=0?pos+1:""}</span>
-          <span class="body"><span class="nm">${esc(aName(x.a))}</span><br><span class="w">${esc(x.w)}</span></span>
-          ${ch.checked?`<span class="date">h. ${aDate(x.a)}</span>`:""}</button>`; }).join("")}
-    </div>
-    <div class="row" style="margin-top:14px">
-      ${ch.checked
-        ?`<span class="verdict ${correct===ch.list.length?"ok":"bad"}">${correct} / ${ch.list.length} doğru sırada.</span><button class="primary" id="cNew">Yeni tur</button>`
-        :`<button class="primary" id="cCheck" ${full?"":"disabled"} style="${full?"":"opacity:.5"}">Kontrol et</button><button class="secondary" id="cReset">Sıfırla</button><span class="note">Yanlış seçtiyseniz numaralı karta tekrar dokunun.</span>`}
-    </div>
-    ${ch.checked?`<p class="note" style="margin:12px 0 0">Doğru sıra: ${sorted.map(a=>`${esc(aName(a))} (${aDate(a)})`).join(" → ")}</p>`:""}
+/* --- Oklarla sıralama --- */
+let SO=null;
+function startSort(items){ SO={items, order:shuffle(items.map((_,i)=>i)), checked:false}; if(SO.order.every((v,i)=>items[v].val>= (i?items[SO.order[i-1]].val:-1))) SO.order.reverse(); }
+function sortHTML(title){
+  if(!SO||SO.items.length<4) return tooSmall("Sıralama için yeterli sayıda farklı âlim yok; süzgeçten daha fazla tür veya dönem seçin.");
+  const sorted=SO.items.map((x,i)=>i).sort((a,b)=>SO.items[a].val-SO.items[b].val);
+  let correct=0; if(SO.checked) SO.order.forEach((v,i)=>{ if(SO.items[v].val===SO.items[sorted[i]].val) correct++; });
+  return `<div class="card">
+    <div class="qmeta"><span class="qkind">Sıralama</span><span>${title}</span></div>
+    <p class="note" style="margin-top:10px">Okları kullanarak en önce vefat edeni en üste, en son vefat edeni en alta taşıyın.</p>
+    <div class="sortlist">${SO.order.map((v,pos)=>{ const it=SO.items[v]; const ok=SO.checked?(it.val===SO.items[sorted[pos]].val):null;
+      return `<div class="srow ${ok===true?"ok":ok===false?"bad":""}">
+        <span class="num">${pos+1}</span>
+        <div class="body"><div class="nm">${esc(it.label)}</div>${it.sub?`<div class="w">${esc(it.sub)}</div>`:""}
+          ${SO.checked?`<div class="info"><span class="date">h. ${it.val}</span> · ${esc(it.info)}</div>`:""}</div>
+        ${SO.checked?"":`<div class="arrows"><button class="arr" data-up="${pos}" aria-label="${esc(it.label)} yukarı taşı" ${pos===0?"disabled":""}>${UP}</button>
+          <button class="arr" data-down="${pos}" aria-label="${esc(it.label)} aşağı taşı" ${pos===SO.order.length-1?"disabled":""}>${DOWN}</button></div>`}
+      </div>`; }).join("")}</div>
+    <div class="row" style="margin-top:14px">${SO.checked
+      ?`<span class="verdict ${correct===SO.items.length?"ok":"bad"}">${correct} / ${SO.items.length} doğru yerde.</span><button class="primary" id="soNew">Yeni tur</button>`
+      :`<button class="primary" id="soCheck">Kontrol et</button><button class="secondary" id="soShuf">Karıştır</button>`}</div>
+    ${SO.checked&&correct!==SO.items.length?`<p class="note" style="margin-top:10px">Doğru sıra: ${sorted.map(i=>`${esc(SO.items[i].label)} (${SO.items[i].val})`).join(" → ")}</p>`:""}
   </div>`;
-  if(ch.checked){ $("#cNew").onclick=()=>{ ch=null; renderChrono(); }; return; }
-  $("#view").querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{ const a=b.dataset.a, pos=ch.order.indexOf(a); if(pos>=0) ch.order=ch.order.slice(0,pos); else ch.order.push(a); renderChrono(); });
-  $("#cReset").onclick=()=>{ ch.order=[]; renderChrono(); };
-  $("#cCheck").onclick=()=>{ if(!full) return; ch.checked=true; ch.order.forEach((a,i)=>tally(aDate(a)===aDate(sorted[i]))); renderChrono(); };
+}
+function bindSort(newFn){
+  const mv=(from,to)=>{ const o=SO.order; [o[from],o[to]]=[o[to],o[from]]; drawView(); const b=document.querySelector(`[data-${to<from?"up":"down"}="${to}"]`)||document.querySelector(`[data-${to<from?"down":"up"}="${to}"]`); if(b) b.focus({preventScroll:true}); };
+  document.querySelectorAll("[data-up]").forEach(b=>b.onclick=()=>{ const p=+b.dataset.up; if(p>0) mv(p,p-1); });
+  document.querySelectorAll("[data-down]").forEach(b=>b.onclick=()=>{ const p=+b.dataset.down; if(p<SO.order.length-1) mv(p,p+1); });
+  const ck=$("#soCheck"); if(ck) ck.onclick=()=>{ SO.checked=true; const sorted=SO.items.map((x,i)=>i).sort((a,b)=>SO.items[a].val-SO.items[b].val); SO.order.forEach((v,i)=>tally(SO.items[v].val===SO.items[sorted[i]].val)); drawView(); };
+  const sh=$("#soShuf"); if(sh) sh.onclick=()=>{ SO.order=shuffle(SO.order); drawView(); };
+  const nw=$("#soNew"); if(nw) nw.onclick=()=>{ newFn(); drawView(); };
 }
 
-/* ---------- Kütüphane ---------- */
+/* --- Eşleştirme --- */
+let MT=null;
+function startMatch(pairs){ MT={pairs, right:shuffle(pairs.map((_,i)=>i)), done:new Set(), selL:null, selR:null, miss:0, wrong:null, t0:Date.now(), t1:0}; }
+function matchHTML(lh,rh){
+  if(!MT||MT.pairs.length<3) return tooSmall("Bu eşleştirme için yeterli kayıt yok; başka bir biçim veya daha çok tür seçin.");
+  const fin=MT.done.size===MT.pairs.length; const secs=Math.round(((MT.t1||Date.now())-MT.t0)/1000);
+  return `<div class="card">
+    <div class="qmeta"><span>Soldan birini, sonra sağdan karşılığını seçin</span><span>Hata: ${MT.miss}</span></div>
+    <div class="match">
+      <div class="col"><h3>${lh}</h3>${MT.pairs.map((p,i)=>`<button class="tile ${MT.done.has(i)?"done":""} ${MT.selL===i?"sel":""} ${MT.wrong&&MT.wrong[0]===i?"wrong":""}" data-ml="${i}" ${MT.done.has(i)?"disabled":""}>${esc(p.left)}${p.leftSub?`<span class="s">${esc(p.leftSub)}</span>`:""}</button>`).join("")}</div>
+      <div class="col"><h3>${rh}</h3>${MT.right.map(i=>`<button class="tile ${MT.done.has(i)?"done":""} ${MT.selR===i?"sel":""} ${MT.wrong&&MT.wrong[1]===i?"wrong":""}" data-mr="${i}" ${MT.done.has(i)?"disabled":""}>${esc(MT.pairs[i].right)}</button>`).join("")}</div>
+    </div>
+    ${fin?`<div class="after"><div class="verdict ok">Tamamlandı: ${secs} saniye, ${MT.miss} hata.</div><div class="infos">${MT.pairs.map(p=>p.info).join("")}</div>
+      <div class="row"><button class="primary" id="mtNew">Yeni tur</button></div></div>`
+      :`<div class="row" style="margin-top:14px"><button class="secondary" id="mtNew">Karıştır, yeni tur</button></div>`}
+  </div>`;
+}
+function bindMatch(newFn){
+  const tryM=()=>{ if(MT.selL!==null&&MT.selR!==null){ const ok=MT.selL===MT.selR; if(ok){ MT.done.add(MT.selL); tally(true); } else { MT.miss++; MT.wrong=[MT.selL,MT.selR]; tally(false); }
+      MT.selL=null; MT.selR=null; if(MT.done.size===MT.pairs.length&&!MT.t1) MT.t1=Date.now(); } drawView(); };
+  document.querySelectorAll("[data-ml]").forEach(b=>b.onclick=()=>{ MT.selL=+b.dataset.ml; MT.wrong=null; tryM(); });
+  document.querySelectorAll("[data-mr]").forEach(b=>b.onclick=()=>{ MT.selR=+b.dataset.mr; MT.wrong=null; tryM(); });
+  const nw=$("#mtNew"); if(nw) nw.onclick=()=>{ newFn(); drawView(); };
+}
+
+/* ======================================================================
+   OYUN EKRANLARI
+   ====================================================================== */
+let mMode=store.get("hadis.mmode","author"); const MMODES={author:"Eser ↔ Müellif", date:"Müellif ↔ Vefat", cat:"Eser ↔ Tür", of:"Eser ↔ Konusu"}; if(!MMODES[mMode]) mMode="author";
+function newEserMatch(){
+  const rv=e=>mMode==="author"?aName(e.a):mMode==="date"?`h. ${aDate(e.a)}`:mMode==="cat"?CATS[e.k].s:e.of;
+  const lv=e=>mMode==="date"?aName(e.a):e.t;
+  let p=shuffle(pool()); if(mMode==="of") p=p.filter(e=>e.of);
+  const ch=[], uL=new Set(), uR=new Set(), uK=new Set(), uA=new Set(), uG=new Set(); const manyG=new Set(p.map(x=>groupOf[x.k])).size>=5;
+  for(const e of p){ const L=lv(e), R=rv(e); if(uL.has(L)||uR.has(R)||uK.has(e.key)) continue;
+    if(mMode==="author"&&!unamb(e)) continue; if(mMode==="date"&&uA.has(e.a)) continue; if(mMode==="cat"&&manyG&&uG.has(groupOf[e.k])) continue;
+    ch.push(e); uL.add(L); uR.add(R); uK.add(e.key); uA.add(e.a); uG.add(groupOf[e.k]); if(ch.length===5) break; }
+  startMatch(ch.map(e=>({left:lv(e), leftSub:mMode==="date"?e.t:(mMode==="of"||mMode==="cat")?aName(e.a):"", right:rv(e), info:kunye(e)})));
+}
+function newEserSort(){
+  const au=shuffle([...new Set(pool().map(e=>e.a))]); const ch=[];
+  for(const a of au){ if(ch.some(b=>Math.abs(aDate(b)-aDate(a))<6)) continue; ch.push(a); if(ch.length===5) break; }
+  startSort(ch.map(a=>{ const e=pick(pool().filter(x=>x.a===a)); return {label:aName(a), sub:e.t, val:aDate(a), info:e.n||CATS[e.k].s}; }));
+}
+function newVefatSort(){
+  const ch=[]; for(const x of shuffle(vpool())){ if(ch.some(y=>Math.abs(y.d-x.d)<3)) continue; ch.push(x); if(ch.length===5) break; }
+  startSort(ch.map(x=>({label:x.n, sub:"", val:x.d, info:x.note})));
+}
+function newVefatMatch(){
+  const ch=[]; for(const x of shuffle(vpool())){ if(ch.some(y=>y.d===x.d)) continue; ch.push(x); if(ch.length===5) break; }
+  startMatch(ch.map(x=>({left:x.n, leftSub:"", right:`h. ${x.d}`, info:person(x)})));
+}
+
+/* --- Kartlar (eserler) --- */
+let FL=null;
+function newFlash(){ const p=pool(); FL = p.length?{e:pick(p), flipped:false, known:FL?FL.known:0, seen:FL?FL.seen:0}:null; }
+function flashHTML(){
+  if(!FL) return tooSmall();
+  const e=FL.e;
+  return `<div class="card flashcard">
+    <span class="qkind">Kart ${FL.seen+1}</span>
+    ${FL.flipped?"":`<div class="t">${esc(e.t)}</div>`}
+    ${FL.flipped?`<div style="width:100%;text-align:left">${kunye(e)}</div>
+      <p class="note">Müellifini, vefat yılını ve türünü biliyor muydun?</p>
+      <div class="row" style="justify-content:center"><button class="secondary" id="flNo">Bilmiyordum</button><button class="primary" id="flYes">Biliyordum</button></div>`
+     :`<p class="x">Müellifini, vefat yılını ve türünü aklından söyle, sonra kartı çevir.</p><button class="primary" id="flFlip">Kartı çevir</button>`}
+    <p class="note">Bu oturumda ${FL.seen} kart · ${FL.known} biliniyor</p>
+  </div>`;
+}
+function bindFlash(){
+  const f=$("#flFlip"); if(f){ f.onclick=()=>{ FL.flipped=true; drawView(); }; f.focus({preventScroll:true}); }
+  const y=$("#flYes"), n=$("#flNo");
+  if(y) y.onclick=()=>{ FL.seen++; FL.known++; tally(true); newFlash(); drawView(); };
+  if(n) n.onclick=()=>{ FL.seen++; tally(false); newFlash(); drawView(); };
+}
+
+/* --- Yazarak (vefat) --- */
+let TY=null;
+function newType(){ const p=vpool(); TY=p.length?{x:pick(p), guess:null, n:TY?TY.n:0, ok:TY?TY.ok:0}:null; }
+function typeHTML(){
+  if(!TY) return tooSmall();
+  const x=TY.x, a=TY.guess!==null;
+  let v=""; if(a){ const diff=TY.guess-x.d; const ok=diff===0;
+    v=`<div class="verdict ${ok?"ok":"bad"}">${ok?"Tam isabet.":(Math.abs(diff)<=5?`Çok yakın, ${Math.abs(diff)} yıl ${diff>0?"fazla":"eksik"}.`:`${Math.abs(diff)} yıl ${diff>0?"fazla":"eksik"}.`)}</div>`; }
+  return `<div class="card">
+    <div class="qmeta"><span class="qkind">Yazarak</span><span>Bu oturumda ${TY.n} soruda ${TY.ok} tam isabet</span></div>
+    <p class="qtext"><strong>${esc(x.n)}</strong> hicrî kaç yılında vefat etmiştir?</p>
+    <form id="tyForm" class="row" style="margin-top:14px" autocomplete="off">
+      <input id="tyIn" class="search yearin" type="number" inputmode="numeric" min="1" max="1500" placeholder="ör. 256" ${a?"disabled":""} value="${a?TY.guess:""}" aria-label="Vefat yılı">
+      ${a?"":`<button class="primary" type="submit">Cevapla</button>`}</form>
+    ${a?`<div class="after">${v}<div class="infos">${person(x)}</div><div class="row"><button class="primary" id="tyNext">Sonraki</button></div></div>`:`<p class="note" style="margin-top:12px">Yılı yazıp Enter'a basın.</p>`}
+  </div>`;
+}
+function bindType(){
+  const f=$("#tyForm"); const inp=$("#tyIn");
+  if(f && TY && TY.guess===null){ inp.focus({preventScroll:true}); f.onsubmit=ev=>{ ev.preventDefault(); const g=parseInt(inp.value,10); if(isNaN(g)) return; TY.guess=g; TY.n++; const ok=g===TY.x.d; if(ok) TY.ok++; tally(ok); drawView(); }; }
+  const nx=$("#tyNext"); if(nx){ nx.onclick=()=>{ newType(); drawView(); }; nx.focus({preventScroll:true}); }
+}
+
+/* --- Kütüphane ve liste --- */
 let q="", libMode=store.get("hadis.lib","tur");
 const norm = s=>s.toLocaleLowerCase("tr").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[ʿʾ'’`]/g,"");
-function entryHTML(e){ return `<div class="entry"><div class="date">h. ${aDate(e.a)}</div><div class="body">
-  <div class="t">${esc(e.t)}</div>
-  <div class="x"><strong>${esc(aName(e.a))}</strong>${libMode==="asir"?` · <span class="tag">${esc(CATS[e.k].s)}</span>`:""}${e.of?` · Konusu: ${esc(e.of)}`:""}</div>
-  ${e.n?`<div class="x">${esc(e.n)}</div>`:""}</div></div>`; }
-function renderLib(keepFocus){
-  const nq = norm(q);
-  const list = pool().filter(e=>!nq || norm(`${e.t} ${aName(e.a)} ${e.of||""} ${e.n} ${CATS[e.k].s}`).includes(nq))
-    .sort((x,y)=>aDate(x.a)-aDate(y.a) || x.t.localeCompare(y.t,"tr"));
-  let html="";
-  if(libMode==="tur"){
-    html = GROUPS.map(g=>{
-      const secs = g.cats.map(k=>{ const items=list.filter(e=>e.k===k); if(!items.length) return "";
-        return `<section class="section"><h3>${esc(CATS[k].s)} <span>${items.length} eser</span></h3><p class="def">${esc(CATS[k].d)}</p>${items.map(entryHTML).join("")}</section>`; }).join("");
-      return secs?`<div class="libgrp">${esc(g.s)}</div>${secs}`:"";
-    }).join("");
-  } else {
-    const groups={}; list.forEach(e=>{ (groups[century(aDate(e.a))] ||= []).push(e); });
-    html = Object.keys(groups).sort((a,b)=>a-b).map(c=>`<section class="section"><h3>Hicrî ${c}. asır <span>${groups[c].length} eser</span></h3>${groups[c].map(entryHTML).join("")}</section>`).join("");
-  }
-  if(!keepFocus){
-    $("#view").innerHTML = `<div class="row"><div class="seg" id="lseg"><button data-l="tur" aria-pressed="${libMode==="tur"}">Türe göre</button><button data-l="asir" aria-pressed="${libMode==="asir"}">Asra göre</button></div></div>
-      <input class="search" id="libq" type="search" placeholder="Eser, müellif veya konu ara (ör. Buhârî, şerh, garîb)" value="${esc(q)}" aria-label="Kütüphanede ara"><div id="libout"></div>`;
-    $("#libq").addEventListener("input",ev=>{ q=ev.target.value; renderLib(true); });
-    $("#lseg").querySelectorAll("button").forEach(b=>b.onclick=()=>{ libMode=b.dataset.l; store.set("hadis.lib",libMode); renderLib(); });
-  }
-  $("#libout").innerHTML = html || `<div class="empty">Aramanızla eşleşen eser yok. Seçili türleri ya da arama kelimesini değiştirin.</div>`;
+function entryHTML(e){ return `<div class="entry"><div class="date">h. ${aDate(e.a)}</div><div class="body"><div class="t">${esc(e.t)}</div>
+  <div class="x"><strong>${esc(aName(e.a))}</strong>${libMode==="asir"?` · <span class="tag">${esc(CATS[e.k].s)}</span>`:""}${e.of?` · Konusu: ${esc(e.of)}`:""}</div>${e.n?`<div class="x">${esc(e.n)}</div>`:""}</div></div>`; }
+function libResults(){
+  const nq=norm(q); const list=pool().filter(e=>!nq||norm(`${e.t} ${aName(e.a)} ${e.of||""} ${e.n} ${CATS[e.k].s}`).includes(nq)).sort((x,y)=>aDate(x.a)-aDate(y.a)||x.t.localeCompare(y.t,"tr"));
+  if(libMode==="tur") return GROUPS.map(g=>{ const s=g.cats.map(k=>{ const it=list.filter(e=>e.k===k); return it.length?`<section class="section"><h3>${esc(CATS[k].s)} <span>${it.length} eser</span></h3><p class="def">${esc(CATS[k].d)}</p>${it.map(entryHTML).join("")}</section>`:""; }).join(""); return s?`<div class="libgrp">${esc(g.s)}</div>${s}`:""; }).join("") || `<div class="empty">Aramanızla eşleşen eser yok.</div>`;
+  const gr={}; list.forEach(e=>(gr[century(aDate(e.a))] ||= []).push(e));
+  return Object.keys(gr).sort((a,b)=>a-b).map(c=>`<section class="section"><h3>Hicrî ${c}. asır <span>${gr[c].length} eser</span></h3>${gr[c].map(entryHTML).join("")}</section>`).join("") || `<div class="empty">Aramanızla eşleşen eser yok.</div>`;
+}
+let vq2="";
+function vlistResults(){
+  const nq=norm(vq2); const list=vpool().filter(p=>!nq||norm(p.n+" "+p.note).includes(nq)); const gr={}; list.forEach(p=>(gr[century(p.d)] ||= []).push(p));
+  return Object.keys(gr).sort((a,b)=>a-b).map(c=>`<section class="section"><h3>Hicrî ${c}. asır <span>${gr[c].length} âlim</span></h3>
+    ${gr[c].map(p=>`<div class="entry"><div class="date">h. ${p.d}</div><div class="body"><div class="t">${esc(p.n)}</div><div class="x">${esc(p.note)}</div></div></div>`).join("")}</section>`).join("") || `<div class="empty">Aramanızla eşleşen âlim yok.</div>`;
 }
 
-/* ---------- genel ---------- */
-function render(tabChange){
-  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected", t.dataset.v===view));
-  renderScore();
-  if(!tabChange){ tf=null; mc=null; mt=null; ch=null; }
-  ({tf:renderTF, mc:renderMC, match:renderMatch, chrono:renderChrono, lib:()=>renderLib()})[view]();
+/* --- Süzgeçler --- */
+function eserFilterHTML(){
+  const counts={}; ENT.forEach(e=>counts[e.k]=(counts[e.k]||0)+1); const p=pool();
+  return `<details class="filter" id="flt" ${store.get("ho.fopen",false)?"open":""}><summary><span>Türler ve dönemler</span><span class="n">${p.length<6?"En az 6 eser gerekli":p.length+" eser seçili"}</span></summary>
+    <div class="fbody"><div class="row"><button class="linkbtn" id="allOn">Hepsini seç</button><button class="linkbtn" id="allOff">Türleri temizle</button></div>
+    ${GROUPS.map(g=>`<div class="grp"><button class="grp-h" data-g="${g.id}">${esc(g.s)} ${g.cats.every(c=>selected.has(c))?"✓":""}</button>
+      <div class="chips">${g.cats.map(k=>`<button class="chip" data-k="${k}" aria-pressed="${selected.has(k)}">${esc(CATS[k].s)} <span class="n">${counts[k]||0}</span></button>`).join("")}</div></div>`).join("")}
+    <div class="grp"><span class="grp-h">Dönem (hicrî asır)</span><div class="chips">${ERAS.map(x=>`<button class="chip" data-era="${x.id}" aria-pressed="${eras.has(x.id)}">${x.s} <span class="n">${ENT.filter(e=>eraOf(aDate(e.a))===x.id).length}</span></button>`).join("")}</div></div>
+    </div></details>`;
 }
-/* ---------- gündüz / gece ---------- */
+function vefatFilterHTML(){
+  return `<details class="filter" id="flt" ${store.get("ho.fopen",false)?"open":""}><summary><span>Asırlar</span><span class="n">${vpool().length} âlim seçili</span></summary>
+    <div class="fbody"><div class="chips">${VCENTS.map(c=>`<button class="chip" data-vc="${c}" aria-pressed="${vcents.has(c)}">${c}. asır <span class="n">${V.filter(p=>century(p.d)===c).length}</span></button>`).join("")}</div>
+    <div class="row"><button class="linkbtn" id="vAll">Hepsini seç</button></div></div></details>`;
+}
+function bindFilters(){
+  const d=$("#flt"); if(d) d.addEventListener("toggle",()=>store.set("ho.fopen",d.open));
+  document.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{ const k=b.dataset.k; selected.has(k)?selected.delete(k):selected.add(k); filterChanged(); });
+  document.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{ const g=GROUPS.find(x=>x.id===b.dataset.g); const on=g.cats.every(k=>selected.has(k)); g.cats.forEach(k=>on?selected.delete(k):selected.add(k)); filterChanged(); });
+  document.querySelectorAll("[data-era]").forEach(b=>b.onclick=()=>{ const id=b.dataset.era; eras.has(id)?eras.delete(id):eras.add(id); filterChanged(); });
+  document.querySelectorAll("[data-vc]").forEach(b=>b.onclick=()=>{ const c=+b.dataset.vc; if(vcents.has(c)&&vcents.size===1) return; vcents.has(c)?vcents.delete(c):vcents.add(c); filterChanged(); });
+  const on=$("#allOn"), off=$("#allOff"), va=$("#vAll");
+  if(on) on.onclick=()=>{ selected=new Set(Object.keys(CATS)); eras=new Set(ERAS.map(x=>x.id)); filterChanged(); };
+  if(off) off.onclick=()=>{ selected=new Set(); filterChanged(); };
+  if(va) va.onclick=()=>{ vcents=new Set(VCENTS); filterChanged(); };
+}
+function filterChanged(){ store.set("hadis2.cats",[...selected]); store.set("hadis2.eras",[...eras]); store.set("ho.vcents",[...vcents]); initMode(); render(); }
+
+/* ======================================================================
+   YÖNLENDİRME VE ÇİZİM
+   ====================================================================== */
+function initMode(){
+  clearInterval(speedTimer);
+  const m=mode[game];
+  if(game==="eser"){
+    if(m==="tf") startQuiz(eserTF,15); else if(m==="mc") startQuiz(eserMC,10);
+    else if(m==="match") newEserMatch(); else if(m==="sort") newEserSort(); else if(m==="speed") startSpeed(eserTF,"eser"); else if(m==="flash"){ FL=null; newFlash(); }
+  } else if(game==="vefat"){
+    if(m==="mc") startQuiz(vefatMC,10); else if(m==="pair") startQuiz(vefatPair,10); else if(m==="type"){ TY=null; newType(); }
+    else if(m==="sort") newVefatSort(); else if(m==="match") newVefatMatch(); else if(m==="speed") startSpeed(vefatPair,"vefat");
+  }
+}
+function drawView(){
+  const v=$("#view"); if(!v) return; const m=mode[game];
+  if(["tf","mc","pair"].includes(m)){ v.innerHTML=quizHTML(); bindQuiz(); }
+  else if(m==="speed"){ v.innerHTML=speedHTML(); bindSpeed(); }
+  else if(m==="sort"){ v.innerHTML=sortHTML(game==="eser"?"Müellifleri vefat sırasına dizin":"Âlimleri vefat sırasına dizin"); bindSort(game==="eser"?newEserSort:newVefatSort); }
+  else if(m==="match"){
+    if(game==="eser"){ v.innerHTML=`<div class="seg" id="mseg">${Object.entries(MMODES).map(([k,t])=>`<button data-mm="${k}" aria-pressed="${mMode===k}">${t}</button>`).join("")}</div>`+matchHTML(mMode==="date"?"Müellif":"Eser",{author:"Müellif",date:"Vefat",cat:"Tür",of:"Konusu"}[mMode]);
+      document.querySelectorAll("[data-mm]").forEach(b=>b.onclick=()=>{ mMode=b.dataset.mm; store.set("hadis.mmode",mMode); newEserMatch(); drawView(); }); bindMatch(newEserMatch); }
+    else { v.innerHTML=matchHTML("Âlim","Vefat"); bindMatch(newVefatMatch); }
+  }
+  else if(m==="flash"){ v.innerHTML=flashHTML(); bindFlash(); }
+  else if(m==="type"){ v.innerHTML=typeHTML(); bindType(); }
+  else if(m==="lib"){
+    if(!$("#libq")){ v.innerHTML=`<div class="seg" id="lseg"><button data-lm="tur" aria-pressed="${libMode==="tur"}">Türe göre</button><button data-lm="asir" aria-pressed="${libMode==="asir"}">Asra göre</button></div>
+      <input class="search" id="libq" type="search" placeholder="Eser, müellif veya konu ara (ör. Buhârî, şerh, garîb)" value="${esc(q)}" aria-label="Kütüphanede ara"><div id="libout" class="panel"></div>`;
+      $("#libq").addEventListener("input",ev=>{ q=ev.target.value; $("#libout").innerHTML=libResults(); });
+      document.querySelectorAll("[data-lm]").forEach(b=>b.onclick=()=>{ libMode=b.dataset.lm; store.set("hadis.lib",libMode); document.querySelectorAll("[data-lm]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.lm===libMode)); $("#libout").innerHTML=libResults(); }); }
+    $("#libout").innerHTML=libResults();
+  }
+  else if(m==="list"){
+    if(!$("#vlq")){ v.innerHTML=`<input class="search" id="vlq" type="search" placeholder="İsim veya eser ara (ör. Zehebî, Sünen)" value="${esc(vq2)}" aria-label="Listede ara"><div id="vlout" class="panel"></div>`;
+      $("#vlq").addEventListener("input",ev=>{ vq2=ev.target.value; $("#vlout").innerHTML=vlistResults(); }); }
+    $("#vlout").innerHTML=vlistResults();
+  }
+}
+function homeHTML(){
+  const book=`<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7c-2-1.5-5-2-8-1.8v12c3-.2 6 .3 8 1.8 2-1.5 5-2 8-1.8v-12C17 5 14 5.5 12 7z"/><path d="M12 7v12"/></svg>`;
+  const clock=`<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>`;
+  const ds=Object.values(A).map(x=>x[1]);
+  return `<section class="hero"><div class="eyebrow">Hadis ilmi · öğrenme oyunları</div><h1>Hadis Oyunları</h1>
+      <p>Hadis literatürünün temel eserlerini, müelliflerini ve âlimlerin vefat yıllarını oyunlarla öğren. Her cevaptan sonra eser ya da âlim hakkında kısa bir bilgi çıkar.</p></section>
+    <div class="games">
+      <button class="gcard" data-go="eser"><span class="ic">${book}</span><h2>Hadis Eserleri</h2>
+        <p>${ENT.length} eser, ${Object.keys(CATS).length} tür. Rivayet kaynaklarından şerhlere, usûlden ricâle; h. ${Math.min(...ds)}–${Math.max(...ds)}.</p>
+        <div class="meta">${Object.values(GAMES.eser.modes).map(m=>`<span class="pill">${m}</span>`).join("")}</div><span class="go">Oyuna gir →</span></button>
+      <button class="gcard" data-go="vefat"><span class="ic">${clock}</span><h2>Vefat Yılları</h2>
+        <p>${V.length} âlimin hicrî vefat yılları: Ömer b. Abdülaziz'den (101) Kastallânî'ye (923).</p>
+        <div class="meta">${Object.values(GAMES.vefat.modes).map(m=>`<span class="pill">${m}</span>`).join("")}</div><span class="go">Oyuna gir →</span></button>
+    </div>
+    <div id="installBox"></div>`;
+}
+function render(){
+  clearInterval(speedTimer);
+  const app=$("#app");
+  if(game==="home"){ app.innerHTML=homeHTML(); document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go)); renderInstall(); return; }
+  const G=GAMES[game];
+  app.innerHTML = `<div class="ghead"><button class="back" id="backBtn">← Oyunlar</button><h2>${G.title}</h2></div>
+    <nav class="modes" role="tablist">${Object.entries(G.modes).map(([k,t])=>`<button class="mode" role="tab" data-mode="${k}" aria-selected="${mode[game]===k}">${t}</button>`).join("")}</nav>
+    ${game==="eser"?eserFilterHTML():vefatFilterHTML()}
+    ${["lib","list"].includes(mode[game])?"":`<div class="scorebar" id="scorebar">${scoreHTML()}</div>`}
+    <div id="view" class="panel"></div>`;
+  $("#backBtn").onclick=()=>go("home");
+  document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{ mode[game]=b.dataset.mode; store.set("ho.m."+game,mode[game]); initMode(); render(); });
+  const sel=document.querySelector(".mode[aria-selected='true']"); if(sel&&sel.scrollIntoView) sel.scrollIntoView({block:"nearest",inline:"center"});
+  bindFilters();
+  if((mode[game]==="speed")&&S&&S.started&&S.end>Date.now()) runTimer();
+  drawView();
+}
+function go(g){
+  if(g===game) return; game=g; if(g!=="home") initMode();
+  try{ if(g==="home") history.replaceState(null,"",location.pathname+location.search); else location.hash = g==="eser"?"eserler":"vefat"; }catch(e){}
+  render(); window.scrollTo({top:0});
+}
+function fromHash(){ const h=location.hash.replace("#",""); return h==="eserler"?"eser":h==="vefat"?"vefat":"home"; }
+window.addEventListener("hashchange",()=>{ const g=fromHash(); if(g!==game){ game=g; if(g!=="home") initMode(); render(); } });
+$("#brand").onclick=()=>go("home");
+
+/* --- klavye --- */
+document.addEventListener("keydown",ev=>{
+  if(ev.target.tagName==="INPUT"||game==="home") return; const k=ev.key.toLowerCase(); const m=mode[game];
+  if(["tf","mc","pair"].includes(m)&&Q&&Q.cur&&Q.ans===null){
+    if(Q.cur.layout==="tf"){ if(k==="d") answerQuiz(0); if(k==="y") answerQuiz(1); }
+    if(/^[1-4]$/.test(k)&&+k<=Q.cur.opts.length) answerQuiz(+k-1);
+  }
+  if(m==="speed"&&S&&S.started&&S.cur){ if(S.cur.layout==="tf"){ if(k==="d") answerSpeed(0); if(k==="y") answerSpeed(1); } if(k==="1") answerSpeed(0); if(k==="2") answerSpeed(1); }
+});
+
+/* --- gündüz / gece --- */
 const mqDark = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : {matches:false};
 function isDark(){ const t=document.documentElement.dataset.theme; return t ? t==="dark" : mqDark.matches; }
 function syncThemeBtn(){ $("#themeLbl").textContent = isDark() ? "Gündüz" : "Gece"; }
-(function(){ const saved = store.get("hadis.theme", null); if(saved==="dark"||saved==="light") document.documentElement.dataset.theme = saved; })();
-$("#themeBtn").onclick = ()=>{ const next = isDark() ? "light" : "dark"; document.documentElement.dataset.theme = next; store.set("hadis.theme", next); syncThemeBtn(); };
-if(mqDark.addEventListener) mqDark.addEventListener("change", syncThemeBtn);
+(function(){ const s=store.get("hadis.theme",null); if(s==="dark"||s==="light") document.documentElement.dataset.theme=s; })();
+$("#themeBtn").onclick=()=>{ const n=isDark()?"light":"dark"; document.documentElement.dataset.theme=n; store.set("hadis.theme",n); syncThemeBtn(); };
+if(mqDark.addEventListener) mqDark.addEventListener("change",syncThemeBtn);
 syncThemeBtn();
 
-renderStats(); renderFilter(); render();
-</script>
+/* --- telefona yükleme (yalnız GitHub Pages sürümünde) --- */
+const IS_SITE = /github\.io$/.test(location.hostname);
+let installEvt=null;
+window.addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); installEvt=e; renderInstall(); });
+function renderInstall(){
+  const box=$("#installBox"); if(!box) return;
+  const standalone = window.matchMedia && window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  if(!IS_SITE || standalone){ box.innerHTML=""; return; }
+  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  box.innerHTML = `<div class="install"><p><b>Telefona uygulama olarak yükle.</b> ${installEvt?"Tek dokunuşla ana ekrana eklenir, internetsiz de açılır.":ios?"Safari'de alttaki Paylaş düğmesine, sonra \"Ana Ekrana Ekle\"ye dokun.":"Tarayıcı menüsünden \"Ana ekrana ekle\" veya \"Uygulamayı yükle\"yi seç."}</p>
+    ${installEvt?`<button class="primary" id="instBtn">Yükle</button>`:""}</div>`;
+  const b=$("#instBtn"); if(b) b.onclick=async()=>{ installEvt.prompt(); try{ await installEvt.userChoice; }catch(e){} installEvt=null; renderInstall(); };
+}
+if(IS_SITE && "serviceWorker" in navigator){ window.addEventListener("load",()=>{ navigator.serviceWorker.register("sw.js").catch(()=>{}); }); }
 
+/* --- başlat --- */
+game = fromHash(); if(game!=="home") initMode();
+render();
+
+</script>
 </body>
 </html>

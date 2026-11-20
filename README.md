@@ -1,15 +1,28 @@
-# Hadis Eserleri Oyunu
+# Hadis Oyunları
 
-Hadis kaynakları, şerhler, usûl, ricâl ve cerh-ta'dîl, ilel, mevzûât, garîb, tahrîc ve diğer türlerden 234 eserle oynanan bir öğrenme oyunu. Eserler 7 ana grup altında 27 türe ayrılmıştır; her eser tek bir türde yer alır. Müelliflerin hicrî vefat yılları da verilir.
+Hadis literatürünün temel eserlerini, müelliflerini ve âlimlerin vefat yıllarını oyunlarla öğrenmek için hazırlanmış bir site. Telefona uygulama olarak yüklenebilir ve internetsiz de açılır.
 
-## Modlar
+## Oyunlar
 
-- **Doğru / Yanlış:** 15 soruluk turlar. Sorular eserin müellifi, vefat yılı ve asrı, türü, konusu ve âlimlerin vefat sırası hakkında.
-- **Test:** 4 şıklı, 10 soruluk turlar. Müellif, vefat yılı, tür, "hangisi X'in eseri değildir", konu ve kronoloji soruları.
-- **Eşleştirme:** Eser–müellif, müellif–vefat, eser–tür veya eser–konusu eşleştirmesi.
-- **Kronoloji:** Müellifleri vefat sırasına dizme.
-- **Kütüphane:** Hicrî asırlara göre gruplanmış, aranabilir eser listesi.
+### Hadis Eserleri
+234 eser, 7 ana grup altında 27 tür. Her eser tek bir türde yer alır; müelliflerin hicrî vefat yılları ve eserler hakkında kısa bilgiler verilir.
 
-Tek bir `index.html` dosyasından oluşur. Kurulum gerektirmez.
+- **Doğru / Yanlış:** müellif, vefat yılı, asır, tür, konu, önce-sonra ve açıklama soruları
+- **Test:** 4 şıklı; müellif, "hangisi X'in eseridir / değildir", tür, farklı olan, açıklama, konu ve kronoloji soruları
+- **Eşleştirme:** eser–müellif, müellif–vefat, eser–tür, eser–konusu
+- **Sıralama:** müellifleri oklarla vefat sırasına dizme
+- **Zamana Karşı:** 60 saniyede en çok doğru
+- **Kartlar:** çevrilebilir çalışma kartları
+- **Kütüphane:** türe veya asra göre aranabilir liste
+
+### Vefat Yılları
+101 (Ömer b. Abdülaziz) ile 923 (Kastallânî) arasında vefat eden 106 âlim.
+
+- **Test:** vefat yılı, asır, "hangisi N. asırda", en önce/en son, aradaki fark ve doğru/yanlış soruları
+- **Yazarak**, **Önce mi, sonra mı?**, **Sıralama** (oklarla), **Eşleştirme**, **Zamana Karşı**, **Liste**
+
+## Dosyalar
+
+`index.html` oyunun kendisidir. `manifest.webmanifest`, `sw.js` ve simge dosyaları telefona yükleme ve çevrimdışı çalışma içindir.
 
 Not: Bazı müelliflerin vefat yılları kaynaklarda farklı verilir. Burada en yaygın olanı kullanılmıştır.
